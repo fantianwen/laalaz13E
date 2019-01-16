@@ -1,0 +1,17 @@
+leelaz
+*.o
+*.d
+.vscode/settings.json
+training/tf/leelalogs
+training/tf/checkpoint
+training/tf/venv
+leelaz-model*
+*.orig
+leelaz_opencl_tuning
+/build-autogtp-*
+/build-validation-*
+.vs/
+build/
+cmake-build-debug/
+.idea/
+
