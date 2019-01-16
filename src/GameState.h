@@ -22,6 +22,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <map>
 
 #include "FastState.h"
 #include "FullBoard.h"
@@ -52,6 +53,7 @@ public:
 
     void play_move(int color, int vertex);
     void play_move(int vertex);
+    void play_move(int color, int vertex,std::string comments);
     bool play_textmove(std::string color, const std::string& vertex);
 
     void start_clock(int color);
@@ -69,6 +71,8 @@ private:
     bool valid_handicap(int stones);
 
     std::vector<std::shared_ptr<const KoState>> game_history;
+    std::map<int,std::string> game_comments;
+
     TimeControl m_timecontrol;
     int m_resigned{FastBoard::EMPTY};
 };

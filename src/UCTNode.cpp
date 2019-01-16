@@ -366,9 +366,11 @@ std::string UCTNode::transferMove(int move) const {
     return result.str();
 }
 
-void UCTNode::print_candidates(int color){
+std::string UCTNode::print_candidates(int color){
 
     printf("begin to show candidates moves \n");
+
+    std::string candidatesString;
 
     for (const auto& child : get_children()) {
         if(child->get_visits()>0) {
@@ -377,12 +379,19 @@ void UCTNode::print_candidates(int color){
             auto prob = child.get_eval(color);
             auto move = child->get_move();
 
-            printf("the move %d in board %s: visited Count:%d, winrate is %f,and policy is %f \n", move, transferMove(move).c_str(),visitCount,prob,move_policy);
+            candidatesString += "the move " + std::to_string(move) +
+                    " in board " +transferMove(move).c_str()+
+                    ": visited Count " +std::to_string(visitCount)+
+                    " winrate is " +std::to_string(prob) +
+                    "and policy is "+std::to_string(move_policy)+
+                    "\n";
         }
     }
+    printf("%s,",candidatesString.c_str());
 
     printf("show end!");
 
+    return candidatesString;
 }
 
 void UCTNode::usingStrengthControl(int color){
@@ -496,6 +505,7 @@ bool UCTNode::accord_case_three_one(int color){
                 if(case_three_visit>_visit){
                     case_three_visit = _visit;
                     case_three_move =_move;
+                    case_three_winrate = prob;
                 }
 
             }
@@ -508,6 +518,7 @@ bool UCTNode::accord_case_three_one(int color){
                 if(case_three_visit>_visit){
                     case_three_visit = _visit;
                     case_three_move =_move;
+                    case_three_winrate = prob;
                 }
             }
 
@@ -519,6 +530,7 @@ bool UCTNode::accord_case_three_one(int color){
                 if(case_three_visit>_visit){
                     case_three_visit = _visit;
                     case_three_move =_move;
+                    case_three_winrate = prob;
                 }
             }
 
@@ -530,6 +542,7 @@ bool UCTNode::accord_case_three_one(int color){
                 if(case_three_visit>_visit){
                     case_three_visit = _visit;
                     case_three_move =_move;
+                    case_three_winrate = prob;
                 }
             }
         }
@@ -537,7 +550,6 @@ bool UCTNode::accord_case_three_one(int color){
     }
     return false;
 }
-
 
 bool UCTNode::get_case_three_flag(){
     return case_three;
@@ -549,6 +561,10 @@ int UCTNode::get_case_three_move(){
 
 int UCTNode::get_case_three_visit(){
     return case_three_visit;
+}
+
+float UCTNode::get_case_three_winrate(){
+    return case_three_winrate;
 }
 
 

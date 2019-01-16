@@ -33,8 +33,8 @@ public:
     void reset_board();
 
     void play_move(int vertex);
+    void play_move(int color, int vertex,std::string comments);
     bool is_move_legal(int color, int vertex) const;
-
     void set_komi(float komi);
     float get_komi() const;
     void set_handicap(int hcap);
@@ -50,6 +50,7 @@ public:
 
     size_t get_movenum() const;
     int get_last_move() const;
+    std::string get_last_comments();
     void display_state();
     std::string move_to_text(int move);
 
@@ -61,6 +62,7 @@ public:
     int m_komove;
     size_t m_movenum;
     int m_lastmove;
+    std::string m_last_comment;
 
 protected:
     void play_move(int color, int vertex);

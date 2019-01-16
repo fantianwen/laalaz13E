@@ -51,7 +51,7 @@ public:
     const std::vector<UCTNodePointer>& get_children() const;
     void sort_children(int color);
     std::string transferMove(int move) const;
-    void print_candidates(int color);
+    std::string print_candidates(int color);
     void usingStrengthControl(int color);
     bool accord_case_one(float first,float second);
     bool accord_case_two(float first);
@@ -60,6 +60,7 @@ public:
     bool get_case_three_flag();
     int get_case_three_move();
     int get_case_three_visit();
+    float get_case_three_winrate();
     UCTNode& get_best_root_child(int color);
     UCTNode* uct_select_child(int color, bool is_root);
 
@@ -151,6 +152,7 @@ private:
     bool case_three;
     int case_three_move;
     int case_three_visit;
+    float case_three_winrate;
     //  m_expand_state manipulation methods
     // INITIAL -> EXPANDING
     // Return false if current state is not INITIAL

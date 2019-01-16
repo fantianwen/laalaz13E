@@ -57,8 +57,13 @@ void KoState::play_move(int vertex) {
 }
 
 void KoState::play_move(int color, int vertex) {
+    play_move(color,vertex,"");
+}
+
+void KoState::play_move(int color,int vertex,std::string comments) {
     if (vertex != FastBoard::RESIGN) {
-        FastState::play_move(color, vertex);
+        FastState::play_move(color, vertex,comments);
     }
     m_ko_hash_history.push_back(board.get_ko_hash());
 }
+

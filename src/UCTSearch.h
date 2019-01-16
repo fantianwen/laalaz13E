@@ -102,11 +102,14 @@ public:
     void set_visit_limit(int visits);
     void ponder();
     int get_last_move();
+    std::string get_last_comments(int color);
     bool is_running() const;
     void increment_playouts();
     SearchResult play_simulation(GameState& currstate, UCTNode* const node);
 
 private:
+
+
     float get_min_psa_ratio() const;
     void dump_stats(FastState& state, UCTNode& parent);
     void tree_stats(const UCTNode& node);
@@ -132,6 +135,9 @@ private:
     std::atomic<bool> m_run{false};
     int m_maxplayouts;
     int m_maxvisits;
+    float selectedWinrate;
+
+    std::string m_candidates;
 
     std::list<Utils::ThreadGroup> m_delete_futures;
 

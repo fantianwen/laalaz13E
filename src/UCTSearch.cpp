@@ -26,6 +26,8 @@
 #include <memory>
 #include <type_traits>
 #include <algorithm>
+#include <iostream>
+#include <sstream>
 
 #include "FastBoard.h"
 #include "FastState.h"
@@ -415,6 +417,19 @@ int UCTSearch::get_last_move(){
     return m_rootstate.get_last_move();
 }
 
+
+std::string UCTSearch::get_last_comments(int color) {
+
+    std::ostringstream comments;
+    comments << ('0'+ selectedWinrate);
+    comments << "::";
+
+    m_candidates = m_root->print_candidates(color);
+    comments << m_candidates;
+
+    return comments.str();
+}
+
 int UCTSearch::get_best_move(passflag_t passflag) {
     int color = m_rootstate.board.get_to_move();
 
@@ -439,9 +454,11 @@ int UCTSearch::get_best_move(passflag_t passflag) {
     if(m_root->get_case_three_flag()){
         bestmove = m_root->get_case_three_move();
         besteval = m_root->get_case_three_visit() ? 0.5f : first_child->get_raw_eval(color);
+        selectedWinrate = m_root->get_case_three_winrate();
     }else{
         bestmove= first_child->get_move();
         besteval= first_child->first_visit() ? 0.5f : first_child->get_raw_eval(color);
+        selectedWinrate = besteval;
     }
 
     // do we want to fiddle with the best move because of the rule set?
@@ -546,7 +563,6 @@ int UCTSearch::get_best_move(passflag_t passflag) {
             bestmove = FastBoard::RESIGN;
         }
     }
-
 
     return bestmove;
 }

@@ -32,11 +32,13 @@ public:
     bool superko() const;
     void reset_game();
 
+    void play_move(int color,int vertex,std::string comments);
     void play_move(int color, int vertex);
     void play_move(int vertex);
 
 private:
     std::vector<std::uint64_t> m_ko_hash_history;
+
 };
 
 #endif

@@ -73,7 +73,7 @@ void FastState::play_move(int vertex) {
     play_move(board.m_tomove, vertex);
 }
 
-void FastState::play_move(int color, int vertex) {
+void FastState::play_move(int color, int vertex,std::string comments) {
     board.m_hash ^= Zobrist::zobrist_ko[m_komove];
     if (vertex == FastBoard::PASS) {
         // No Ko move
@@ -84,6 +84,7 @@ void FastState::play_move(int color, int vertex) {
     board.m_hash ^= Zobrist::zobrist_ko[m_komove];
 
     m_lastmove = vertex;
+    m_last_comment = comments;
     m_movenum++;
 
     if (board.m_tomove == color) {
@@ -100,12 +101,20 @@ void FastState::play_move(int color, int vertex) {
     board.m_hash ^= Zobrist::zobrist_pass[get_passes()];
 }
 
+void FastState::play_move(int color, int vertex) {
+    play_move(color,vertex,"");
+}
+
 size_t FastState::get_movenum() const {
     return m_movenum;
 }
 
 int FastState::get_last_move() const {
     return m_lastmove;
+}
+
+std::string FastState::get_last_comments() {
+    return m_last_comment;
 }
 
 int FastState::get_passes() const {

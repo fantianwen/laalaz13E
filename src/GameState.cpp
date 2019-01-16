@@ -35,6 +35,7 @@
 void GameState::init_game(int size, float komi) {
     KoState::init_game(size, komi);
 
+    game_comments.clear();
     game_history.clear();
     game_history.emplace_back(std::make_shared<KoState>(*this));
 
@@ -83,20 +84,24 @@ void GameState::rewind() {
     m_movenum = 0;
 }
 
-void GameState::play_move(int vertex) {
-    play_move(get_to_move(), vertex);
-}
-
-void GameState::play_move(int color, int vertex) {
+void GameState::play_move(int color,int vertex,std::string comments){
     if (vertex == FastBoard::RESIGN) {
         m_resigned = color;
     } else {
-        KoState::play_move(color, vertex);
+        KoState::play_move(color, vertex, comments);
     }
 
     // cut off any leftover moves from navigating
     game_history.resize(m_movenum);
     game_history.emplace_back(std::make_shared<KoState>(*this));
+}
+
+void GameState::play_move(int vertex) {
+    play_move(get_to_move(), vertex);
+}
+
+void GameState::play_move(int color, int vertex) {
+    play_move(color,vertex,"");
 }
 
 bool GameState::play_textmove(std::string color, const std::string& vertex) {
