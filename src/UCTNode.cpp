@@ -408,7 +408,7 @@ void UCTNode::usingStrengthControl(int color){
     int index = 0;
     case_three = false;
 
-    float first,second;
+    float first = 0,second = 0;
 
     for (const auto& child : get_children()) {
 
@@ -456,7 +456,7 @@ bool UCTNode::accord_case_three(int color,float threshold){
 
     case_three = true;
 
-    int _visit;
+    int _visit = 0;
 
     for (const auto& child : get_children()) {
 
@@ -482,78 +482,74 @@ bool UCTNode::accord_case_three_one(int color){
 
     int _move = 0,_visit = 0;
 
-    int index = 0;
+    firstMoveRate = get_first_child()->get_eval(color);
+
+    allowedProb1 = firstMoveRate-(float)0.03*c_param;
+    allowedProb2 = firstMoveRate-(float)0.04*c_param;
+    allowedProb3 = firstMoveRate-(float)0.06*c_param;
+    allowedProb4 = firstMoveRate-(float)0.08*c_param;
+
+    case_three_visit = get_first_child()->get_visits();
+    case_three_move = get_first_child()->get_move();
+    case_three_winrate = get_first_child()->get_eval(color);
 
     for (const auto& child : get_children()) {
-        int visitCount = child->get_visits();
         _visit = child->get_visits();
         _move = child->get_move();
         float policy = child.get_policy();
 
         auto prob = child.get_eval(color);
-        if(index==0){
-            firstMoveRate = prob;
-            allowedProb1 = firstMoveRate-0.03*c_param;
-            allowedProb2 = firstMoveRate-0.04*c_param;
-            allowedProb3 = firstMoveRate-0.06*c_param;
-            allowedProb4 = firstMoveRate-0.08*c_param;
-            case_three_visit = _visit;
-            case_three_move = _move;
-        }else{
 
-            if(prob>=allowedProb4 && prob<=allowedProb3 && policy>=allowedPolicy4){
+        if(prob>=allowedProb4 && prob<=allowedProb3 && policy>=allowedPolicy4){
 
-                printf("accord with case 3-4 \n");
+            printf("accord with case 3-4 \n");
 
-                case_three = true;
-                if(case_three_visit>_visit){
-                    case_three_visit = _visit;
-                    case_three_move =_move;
-                    case_three_winrate = prob;
-                }
+            case_three = true;
+            if(case_three_visit>_visit){
+                case_three_visit = _visit;
+                case_three_move =_move;
+                case_three_winrate = prob;
             }
+        }
 
-            if(prob>=allowedProb3 && prob<=allowedProb2 && policy>=allowedPolicy3){
+        if(prob>=allowedProb3 && prob<=allowedProb2 && policy>=allowedPolicy3){
 
-                printf("accord with case 3-3 \n");
+            printf("accord with case 3-3 \n");
 
-                case_three = true;
-                if(case_three_visit>_visit){
-                    case_three_visit = _visit;
-                    case_three_move =_move;
-                    case_three_winrate = prob;
-                }
+            case_three = true;
+            if(case_three_visit>_visit){
+                case_three_visit = _visit;
+                case_three_move =_move;
+                case_three_winrate = prob;
             }
+        }
 
 
-            if(prob>=allowedProb2 && prob<=allowedProb1 && policy>=allowedPolicy2){
+        if(prob>=allowedProb2 && prob<=allowedProb1 && policy>=allowedPolicy2){
 
-                printf("accord with case 3-2 \n");
+            printf("accord with case 3-2 \n");
 
-                case_three = true;
-                if(case_three_visit>_visit){
-                    case_three_visit = _visit;
-                    case_three_move =_move;
-                    case_three_winrate = prob;
-                }
+            case_three = true;
+            if(case_three_visit>_visit){
+                case_three_visit = _visit;
+                case_three_move =_move;
+                case_three_winrate = prob;
             }
+        }
 
-            if(prob>=allowedProb1 && policy>allowedPolicy1){
+        if(prob>=allowedProb1 && policy>allowedPolicy1){
 
-                printf("accord with case 3-1 \n");
+            printf("accord with case 3-1 \n");
 
-                case_three = true;
+            case_three = true;
 
-                if(case_three_visit>_visit){
-                    case_three_visit = _visit;
-                    case_three_move =_move;
-                    case_three_winrate = prob;
-                }
-
+            if(case_three_visit>_visit){
+                case_three_visit = _visit;
+                case_three_move =_move;
+                case_three_winrate = prob;
             }
 
         }
-        index++;
     }
     return false;
 }

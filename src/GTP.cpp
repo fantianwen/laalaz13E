@@ -134,7 +134,9 @@ void GTP::setup_default_parameters() {
     cfg_precision = precision_t::AUTO;
 #endif
 #endif
-    cfg_puct = 0.8f;
+//    cfg_puct = 0.8f;
+    cfg_puct = 0.6f;
+
     cfg_softmax_temp = 1.0f;
     cfg_fpu_reduction = 0.25f;
     // see UCTSearch::should_resign
