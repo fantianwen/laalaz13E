@@ -443,6 +443,7 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                 int move = search->think(who);
 
                 std::string last_comments = search->get_last_comments(who);
+
                 game.play_move(who,move,last_comments);
 
                 std::string vertex = game.move_to_text(move);

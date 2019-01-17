@@ -380,7 +380,7 @@ std::string UCTNode::print_candidates(int color){
             auto move = child->get_move();
 
             candidatesString += "the move " + std::to_string(move) +
-                    " in board " +transferMove(move).c_str()+
+                    " in board " +transferMove(move)+
                     ": visited Count " +std::to_string(visitCount)+
                     " winrate is " +std::to_string(prob) +
                     "and policy is "+std::to_string(move_policy)+
@@ -431,9 +431,13 @@ void UCTNode::usingStrengthControl(int color){
     }else if(accord_case_two(first)){
         //do nothing
         printf("accord with case two \n");
-    }else if(accord_case_three()){
+    }else if(first>=t_min && first<=t_max){
         // do nothing
+
+        accord_case_three(color,first-t_dif);
         printf("accord with case three \n");
+        printf("case three move is %d \n",case_three_move);
+
     }else{
         accord_case_three_one(color);
     }
@@ -445,30 +449,30 @@ bool UCTNode::accord_case_one(float first,float second){
 }
 
 bool UCTNode::accord_case_two(float first){
-    return first<t_min;
+    return first<=t_min;
 }
 
-bool UCTNode::accord_case_three(){
+bool UCTNode::accord_case_three(int color,float threshold){
 
-    int index = 0;
+    case_three = true;
+
+    int _visit;
 
     for (const auto& child : get_children()) {
 
         int visitCount = child->get_visits();
-
-        auto prob = static_cast<float>(((float)visitCount / get_visits()));
-
-        if(index==0){
-            if (prob>=t_min && prob<=t_max){
-                return true;
-            }else{
-                return false;
+        if (child.get_eval(color)>=threshold) {
+            if (visitCount > _visit) {
+                _visit = visitCount;
+                case_three_move = child.get_move();
+                case_three_winrate = child.get_eval(color);
             }
         }
-        index ++;
     }
-    return  false;
+
+    return false;
 }
+
 
 bool UCTNode::accord_case_three_one(int color){
 
@@ -489,30 +493,17 @@ bool UCTNode::accord_case_three_one(int color){
         auto prob = child.get_eval(color);
         if(index==0){
             firstMoveRate = prob;
-            allowedProb1 = firstMoveRate-0.03;
-            allowedProb2 = firstMoveRate-0.04;
-            allowedProb3 = firstMoveRate-0.06;
-            allowedProb4 = firstMoveRate-0.08;
+            allowedProb1 = firstMoveRate-0.03*c_param;
+            allowedProb2 = firstMoveRate-0.04*c_param;
+            allowedProb3 = firstMoveRate-0.06*c_param;
+            allowedProb4 = firstMoveRate-0.08*c_param;
             case_three_visit = _visit;
             case_three_move = _move;
         }else{
-            if(prob>=allowedProb1 && policy>allowedPolicy1){
 
-                printf("accord with case 3-1 \n");
+            if(prob>=allowedProb4 && prob<=allowedProb3 && policy>=allowedPolicy4){
 
-                case_three = true;
-
-                if(case_three_visit>_visit){
-                    case_three_visit = _visit;
-                    case_three_move =_move;
-                    case_three_winrate = prob;
-                }
-
-            }
-
-            if(prob>=allowedProb2 && prob<=allowedProb1 && policy>=allowedPolicy2){
-
-                printf("accord with case 3-2 \n");
+                printf("accord with case 3-4 \n");
 
                 case_three = true;
                 if(case_three_visit>_visit){
@@ -534,9 +525,10 @@ bool UCTNode::accord_case_three_one(int color){
                 }
             }
 
-            if(prob>=allowedProb4 && prob<=allowedProb3 && policy>=allowedPolicy4){
 
-                printf("accord with case 3-4 \n");
+            if(prob>=allowedProb2 && prob<=allowedProb1 && policy>=allowedPolicy2){
+
+                printf("accord with case 3-2 \n");
 
                 case_three = true;
                 if(case_three_visit>_visit){
@@ -545,6 +537,21 @@ bool UCTNode::accord_case_three_one(int color){
                     case_three_winrate = prob;
                 }
             }
+
+            if(prob>=allowedProb1 && policy>allowedPolicy1){
+
+                printf("accord with case 3-1 \n");
+
+                case_three = true;
+
+                if(case_three_visit>_visit){
+                    case_three_visit = _visit;
+                    case_three_move =_move;
+                    case_three_winrate = prob;
+                }
+
+            }
+
         }
         index++;
     }

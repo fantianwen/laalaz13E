@@ -55,7 +55,7 @@ public:
     void usingStrengthControl(int color);
     bool accord_case_one(float first,float second);
     bool accord_case_two(float first);
-    bool accord_case_three();
+    bool accord_case_three(int color,float _dif);
     bool accord_case_three_one(int color);
     bool get_case_three_flag();
     int get_case_three_move();
@@ -68,10 +68,13 @@ public:
     bool first_visit() const;
     bool has_children() const;
     bool expandable(const float min_psa_ratio = 0.0f) const;
-    float t_dif = 0.05;
-    float t_max = 0.60;
-    float t_min = 0.30;
-    float t_uniq = 0.10;// the gap
+//    const float c_param = 0.8;
+//    const float c_param = 1.5;
+    const float c_param = 2.5;
+    float t_dif = 0.03*c_param;
+    float t_max = 0.55;
+    float t_min = 0.35;
+    float t_uniq = 0.08*c_param;// the gap
     void invalidate();
     void set_active(const bool active);
     bool valid() const;

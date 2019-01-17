@@ -421,11 +421,13 @@ int UCTSearch::get_last_move(){
 std::string UCTSearch::get_last_comments(int color) {
 
     std::ostringstream comments;
-    comments << ('0'+ selectedWinrate);
+    comments << (std::to_string(selectedWinrate));
     comments << "::";
 
     m_candidates = m_root->print_candidates(color);
     comments << m_candidates;
+
+    printf("the selected Node's winrate is %f \n",selectedWinrate);
 
     return comments.str();
 }
@@ -453,7 +455,7 @@ int UCTSearch::get_best_move(passflag_t passflag) {
 
     if(m_root->get_case_three_flag()){
         bestmove = m_root->get_case_three_move();
-        besteval = m_root->get_case_three_visit() ? 0.5f : first_child->get_raw_eval(color);
+        besteval = m_root->get_case_three_winrate();
         selectedWinrate = m_root->get_case_three_winrate();
     }else{
         bestmove= first_child->get_move();
