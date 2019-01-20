@@ -254,6 +254,7 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root) {
     }
 
     const auto numerator = std::sqrt(double(parentvisits));
+    // todo how it works
     const auto fpu_reduction = (is_root ? cfg_fpu_root_reduction : cfg_fpu_reduction) * std::sqrt(total_visited_policy);
     // Estimated eval for unknown nodes = original parent NN eval - reduction
     const auto fpu_eval = get_net_eval(color) - fpu_reduction;
@@ -424,23 +425,27 @@ std::string UCTNode::print_candidates(int color,float selectedWinrate){
         }
     }
 
+    index = 0;
+
     candidatesString+="C[";
 
     candidatesString+=std::to_string(selectedWinrate)+"::";
 
+    candidatesString+="index    vertex    wr    visit    sp\n";
+
     for (const auto& child : get_children()) {
+        index++;
         if(child->get_visits()>0) {
             int visitCount = child->get_visits();
             auto move_policy = static_cast<float>(((float)visitCount / get_visits()));
             auto prob = child.get_eval(color);
             auto move = child->get_move();
 
-            candidatesString += "the move " + std::to_string(move) +
-                    " in board " +transferMove(move)+
-                    ": visited Count " +std::to_string(visitCount)+
-                    " winrate is " +std::to_string(prob) +
-                    "and policy is "+std::to_string(move_policy)+
-                    "\n";
+            candidatesString += std::to_string(index)+"    "+
+                    transferMove(move)+"    "+
+                    std::to_string(prob)+"    "+
+                    std::to_string(visitCount)+"    "+
+                    std::to_string(move_policy)+"\n";
         }
     }
 
