@@ -417,14 +417,11 @@ int UCTSearch::get_last_move(){
     return m_rootstate.get_last_move();
 }
 
-
 std::string UCTSearch::get_last_comments(int color) {
 
     std::ostringstream comments;
-    comments << (std::to_string(selectedWinrate));
-    comments << "::";
 
-    m_candidates = m_root->print_candidates(color);
+    m_candidates = m_root->print_candidates(color,selectedWinrate);
     comments << m_candidates;
 
     printf("the selected Node's winrate is %f \n",selectedWinrate);
@@ -437,7 +434,7 @@ int UCTSearch::get_best_move(passflag_t passflag) {
 
     // Make sure best is first
     m_root->sort_children(color);
-    m_root->print_candidates(color);
+    m_root->print_candidates(color,selectedWinrate);
     m_root->usingStrengthControl(color);
 
     // Check whether to randomize the best move proportional

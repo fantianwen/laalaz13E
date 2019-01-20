@@ -136,7 +136,7 @@ void GTP::setup_default_parameters() {
 #endif
 //    cfg_puct = 0.8f;
 //    cfg_puct = 0.6f;
-    cfg_puct = 1.0f;
+    cfg_puct = 10.0f;
     cfg_softmax_temp = 1.0f;
     cfg_fpu_reduction = 0.25f;
     // see UCTSearch::should_resign
@@ -447,6 +447,7 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                 std::string last_comments = search->get_last_comments(who);
 
                 game.play_move(who,move,last_comments);
+//                game.set_last_move_canidates(candidates);
 
                 std::string vertex = game.move_to_text(move);
                 if (!analysis_output) {

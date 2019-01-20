@@ -28,6 +28,7 @@
 #include <stdexcept>
 #include <type_traits>
 #include <utility>
+#include <regex>
 
 #include "FullBoard.h"
 #include "GTP.h"
@@ -464,6 +465,7 @@ std::string SGFTree::state_to_string(GameState& pstate, int compcolor) {
     while (state->forward_move()) {
         int move = state->get_last_move();
         std::string comments = state->get_last_comments();
+
         assert(move != FastBoard::RESIGN);
         std::string movestr = state->board.move_to_text_sgf(move);
 
@@ -472,7 +474,8 @@ std::string SGFTree::state_to_string(GameState& pstate, int compcolor) {
         } else {
             moves.append(";B[" + movestr + "]");
         }
-        moves.append("C["+comments+"]");
+
+        moves.append(comments);
         if (++counter % 10 == 0) {
             moves.append("\n");
         }

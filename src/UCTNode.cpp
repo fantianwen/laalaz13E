@@ -336,6 +336,48 @@ void UCTNode::sort_children(int color) {
 }
 
 
+std::string UCTNode::transforMoveForSGF(int move) const{
+
+    std::ostringstream result;
+
+    int column = move % 15;
+    int row = move / 15;
+
+    column--;
+    row--;
+
+    assert(move == FastBoard::PASS
+           || move == FastBoard::RESIGN
+           || (row >= 0 && row < 13));
+    assert(move == FastBoard::PASS
+           || move == FastBoard::RESIGN
+           || (column >= 0 && column < 13));
+
+    // SGF inverts rows
+    row = 13 - row - 1;
+
+    if (move >= 0 && move <= 15*15) {
+        if (column <= 25) {
+            result << static_cast<char>('a' + column);
+        } else {
+            result << static_cast<char>('A' + column - 26);
+        }
+        if (row <= 25) {
+            result << static_cast<char>('a' + row);
+        } else {
+            result << static_cast<char>('A' + row - 26);
+        }
+    } else if (move == FastBoard::PASS) {
+        result << "tt";
+    } else if (move == FastBoard::RESIGN) {
+        result << "tt";
+    } else {
+        result << "error";
+    }
+
+    return result.str();
+}
+
 std::string UCTNode::transferMove(int move) const {
     std::ostringstream result;
 
@@ -366,11 +408,25 @@ std::string UCTNode::transferMove(int move) const {
     return result.str();
 }
 
-std::string UCTNode::print_candidates(int color){
+std::string UCTNode::print_candidates(int color,float selectedWinrate){
 
     printf("begin to show candidates moves \n");
 
-    std::string candidatesString;
+    std::string candidatesString = "LB";
+
+    int index = 0;
+
+    for (const auto& child : get_children()){
+        index++;
+        if(child->get_visits()>0) {
+            auto move = child->get_move();
+            candidatesString += "["+transforMoveForSGF(move)+":"+std::to_string(index)+"]";
+        }
+    }
+
+    candidatesString+="C[";
+
+    candidatesString+=std::to_string(selectedWinrate)+"::";
 
     for (const auto& child : get_children()) {
         if(child->get_visits()>0) {
@@ -387,6 +443,9 @@ std::string UCTNode::print_candidates(int color){
                     "\n";
         }
     }
+
+    candidatesString+="]";
+
     printf("%s,",candidatesString.c_str());
 
     printf("show end!");
@@ -496,7 +555,7 @@ bool UCTNode::accord_case_three_one(int color){
     for (const auto& child : get_children()) {
         _visit = child->get_visits();
         _move = child->get_move();
-        float policy = child.get_policy();
+        float policy = (float)_visit/get_visits();
 
         auto prob = child.get_eval(color);
 
@@ -504,8 +563,10 @@ bool UCTNode::accord_case_three_one(int color){
 
             printf("accord with case 3-4 \n");
 
+            printf("policy is: %f,allowedPolicy is:%f.",policy,allowedPolicy4);
+
             case_three = true;
-            if(case_three_visit>_visit){
+            if(case_three_winrate>prob){
                 case_three_visit = _visit;
                 case_three_move =_move;
                 case_three_winrate = prob;
@@ -516,8 +577,10 @@ bool UCTNode::accord_case_three_one(int color){
 
             printf("accord with case 3-3 \n");
 
+            printf("policy is: %f,allowedPolicy is:%f.",policy,allowedPolicy3);
+
             case_three = true;
-            if(case_three_visit>_visit){
+            if(case_three_winrate>prob){
                 case_three_visit = _visit;
                 case_three_move =_move;
                 case_three_winrate = prob;
@@ -529,8 +592,10 @@ bool UCTNode::accord_case_three_one(int color){
 
             printf("accord with case 3-2 \n");
 
+            printf("policy is: %f,allowedPolicy is:%f.",policy,allowedPolicy2);
+
             case_three = true;
-            if(case_three_visit>_visit){
+            if(case_three_winrate>prob){
                 case_three_visit = _visit;
                 case_three_move =_move;
                 case_three_winrate = prob;
@@ -541,9 +606,11 @@ bool UCTNode::accord_case_three_one(int color){
 
             printf("accord with case 3-1 \n");
 
+            printf("policy is: %f,allowedPolicy is:%f.",policy,allowedPolicy1);
+
             case_three = true;
 
-            if(case_three_visit>_visit){
+            if(case_three_winrate>prob){
                 case_three_visit = _visit;
                 case_three_move =_move;
                 case_three_winrate = prob;
