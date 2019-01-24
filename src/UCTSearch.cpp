@@ -434,8 +434,8 @@ int UCTSearch::get_best_move(passflag_t passflag) {
 
     // Make sure best is first
     m_root->sort_children(color);
-    m_root->print_candidates(color,selectedWinrate);
     m_root->usingStrengthControl(color);
+    m_root->print_candidates(color,selectedWinrate);
 
     // Check whether to randomize the best move proportional
     // to the playout counts, early game only.
@@ -734,9 +734,12 @@ int UCTSearch::think(int color, passflag_t passflag) {
 
     myprintf("Thinking at most %.1f seconds...\n", time_for_move/100.0f);
 
+    m_root->get_static_policy(m_network,m_rootstate);
+
     // create a sorted list of legal moves (make sure we
     // play something legal and decent even in time trouble)
     m_root->prepare_root_node(m_network, color, m_nodes, m_rootstate);
+
 
     m_run = true;
     int cpus = cfg_num_threads;

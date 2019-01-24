@@ -49,6 +49,48 @@ bool UCTNode::first_visit() const {
     return m_visits == 0;
 }
 
+
+void UCTNode::get_static_policy(Network & network,
+                                GameState& state){
+
+    const auto raw_netlist = network.get_output(
+            &state, Network::Ensemble::RANDOM_SYMMETRY);
+
+    const auto to_move = state.board.get_to_move();
+
+    std::vector<Network::PolicyVertexPair> nodelist;
+
+    auto legal_sum = 0.0f;
+    for (auto i = 0; i < NUM_INTERSECTIONS; i++) {
+        const auto x = i % BOARD_SIZE;
+        const auto y = i / BOARD_SIZE;
+        const auto vertex = state.board.get_vertex(x, y);
+        if (state.is_move_legal(to_move, vertex)) {
+            nodelist.emplace_back(raw_netlist.policy[i], vertex);
+            legal_sum += raw_netlist.policy[i];
+        }
+    }
+    nodelist.emplace_back(raw_netlist.policy_pass, FastBoard::PASS);
+    legal_sum += raw_netlist.policy_pass;
+
+    if (legal_sum > std::numeric_limits<float>::min()) {
+        // re-normalize after removing illegal moves.
+        for (auto& node : nodelist) {
+            node.first /= legal_sum;
+        }
+    } else {
+        // This can happen with new randomized nets.
+        auto uniform_prob = 1.0f / nodelist.size();
+        for (auto& node : nodelist) {
+            node.first = uniform_prob;
+        }
+    }
+
+    this->initial_node_list = nodelist;
+    printf("git static policy from network! \n");
+
+}
+
 bool UCTNode::create_children(Network & network,
                               std::atomic<int>& nodecount,
                               GameState& state,
@@ -111,6 +153,7 @@ bool UCTNode::create_children(Network & network,
     }
 
     link_nodelist(nodecount, nodelist, min_psa_ratio);
+
     expand_done();
     return true;
 }
@@ -157,6 +200,10 @@ const std::vector<UCTNodePointer>& UCTNode::get_children() const {
     return m_children;
 }
 
+
+float UCTNode::get_static_sp() const {
+    return m_static_sp;
+}
 
 int UCTNode::get_move() const {
     return m_move;
@@ -429,9 +476,9 @@ std::string UCTNode::print_candidates(int color,float selectedWinrate){
 
     candidatesString+="C[";
 
-    candidatesString+=std::to_string(selectedWinrate)+"::";
+    candidatesString+=std::to_string(selectedWinrate)+"::\n";
 
-    candidatesString+="index    vertex    wr    visit    sp\n";
+    candidatesString+="index\tvertex\twr\tvisit\tsp\ts_sp\n";
 
     for (const auto& child : get_children()) {
         index++;
@@ -440,12 +487,14 @@ std::string UCTNode::print_candidates(int color,float selectedWinrate){
             auto move_policy = static_cast<float>(((float)visitCount / get_visits()));
             auto prob = child.get_eval(color);
             auto move = child->get_move();
+            auto s_sp = child->get_static_sp();
 
-            candidatesString += std::to_string(index)+"    "+
-                    transferMove(move)+"    "+
-                    std::to_string(prob)+"    "+
-                    std::to_string(visitCount)+"    "+
-                    std::to_string(move_policy)+"\n";
+            candidatesString += std::to_string(index)+"\t"+" "+" "+
+                    transferMove(move)+"\t"+" "+" "+
+                    std::to_string(prob)+"\t"+" "+" "+
+                    std::to_string(visitCount)+"\t"+" "+" "+
+                    std::to_string(move_policy)+"\t"+" "+" "+
+                    std::to_string(s_sp)+"\n";
         }
     }
 
@@ -485,6 +534,13 @@ void UCTNode::usingStrengthControl(int color){
         }
 
         index ++;
+
+        for (const auto& initial_node: this->initial_node_list){
+            if(initial_node.second==child.get_move()){
+                child->m_static_sp = initial_node.first;
+            }
+        }
+
     }
 
     printf("the first wr: %f, the second wr: %f",first,second);
@@ -520,14 +576,13 @@ bool UCTNode::accord_case_three(int color,float threshold){
 
     case_three = true;
 
-    int _visit = 0;
+    float _sp = 0;
 
     for (const auto& child : get_children()) {
 
-        int visitCount = child->get_visits();
         if (child.get_eval(color)>=threshold) {
-            if (visitCount > _visit) {
-                _visit = visitCount;
+            if (child.get_static_sp() > _sp) {
+                _sp = child.get_static_sp();
                 case_three_move = child.get_move();
                 case_three_winrate = child.get_eval(color);
             }
@@ -544,7 +599,7 @@ bool UCTNode::accord_case_three_one(int color){
     float allowedProb1,allowedProb2,allowedProb3,allowedProb4;
     float allowedPolicy1 = 0.05,allowedPolicy2=0.10,allowedPolicy3=0.20,allowedPolicy4=0.40;
 
-    int _move = 0,_visit = 0;
+    int _move = 0;
 
     firstMoveRate = get_first_child()->get_eval(color);
 
@@ -553,14 +608,13 @@ bool UCTNode::accord_case_three_one(int color){
     allowedProb3 = firstMoveRate-(float)0.06*c_param;
     allowedProb4 = firstMoveRate-(float)0.08*c_param;
 
-    case_three_visit = get_first_child()->get_visits();
     case_three_move = get_first_child()->get_move();
     case_three_winrate = get_first_child()->get_eval(color);
 
     for (const auto& child : get_children()) {
-        _visit = child->get_visits();
+//        _visit = child->get_visits();
         _move = child->get_move();
-        float policy = (float)_visit/get_visits();
+        float policy = child.get_static_sp();
 
         auto prob = child.get_eval(color);
 
@@ -572,7 +626,6 @@ bool UCTNode::accord_case_three_one(int color){
 
             case_three = true;
             if(case_three_winrate>prob){
-                case_three_visit = _visit;
                 case_three_move =_move;
                 case_three_winrate = prob;
             }
@@ -586,7 +639,6 @@ bool UCTNode::accord_case_three_one(int color){
 
             case_three = true;
             if(case_three_winrate>prob){
-                case_three_visit = _visit;
                 case_three_move =_move;
                 case_three_winrate = prob;
             }
@@ -601,7 +653,6 @@ bool UCTNode::accord_case_three_one(int color){
 
             case_three = true;
             if(case_three_winrate>prob){
-                case_three_visit = _visit;
                 case_three_move =_move;
                 case_three_winrate = prob;
             }
@@ -616,7 +667,6 @@ bool UCTNode::accord_case_three_one(int color){
             case_three = true;
 
             if(case_three_winrate>prob){
-                case_three_visit = _visit;
                 case_three_move =_move;
                 case_three_winrate = prob;
             }
@@ -632,10 +682,6 @@ bool UCTNode::get_case_three_flag(){
 
 int UCTNode::get_case_three_move(){
     return case_three_move;
-}
-
-int UCTNode::get_case_three_visit(){
-    return case_three_visit;
 }
 
 float UCTNode::get_case_three_winrate(){
