@@ -49,6 +49,7 @@ private:
     static constexpr std::uint64_t UNINFLATED = 0;
 
     static std::atomic<size_t> m_tree_size;
+
     static void increment_tree_size(size_t sz);
     static void decrement_tree_size(size_t sz);
 
@@ -122,6 +123,7 @@ public:
     int get_move() const;
     // this can only be called if it is an inflated pointer
     float get_eval(int tomove) const;
+    float get_static_sp() const;
 };
 
 #endif

@@ -43,6 +43,7 @@ public:
     UCTNode() = delete;
     ~UCTNode() = default;
 
+    void get_static_policy(Network & network,GameState& state);
     bool create_children(Network & network,
                          std::atomic<int>& nodecount,
                          GameState& state, float& eval,
@@ -60,7 +61,6 @@ public:
     bool accord_case_three_one(int color);
     bool get_case_three_flag();
     int get_case_three_move();
-    int get_case_three_visit();
     float get_case_three_winrate();
     UCTNode& get_best_root_child(int color);
     UCTNode* uct_select_child(int color, bool is_root);
@@ -80,6 +80,7 @@ public:
     void set_active(const bool active);
     bool valid() const;
     bool active() const;
+    float get_static_sp() const ;
     int get_move() const;
     int get_visits() const;
     float get_policy() const;
@@ -123,6 +124,7 @@ private:
 
     // Move
     std::int16_t m_move;
+    std::float_t m_static_sp{0.0f};
     // UCT
     std::atomic<std::int16_t> m_virtual_loss{0};
     std::atomic<int> m_visits{0};
@@ -132,6 +134,8 @@ private:
     float m_net_eval{0.0f};
     std::atomic<double> m_blackevals{0.0};
     std::atomic<Status> m_status{ACTIVE};
+    std::vector<Network::PolicyVertexPair> initial_node_list;
+
 
     // m_expand_state acts as the lock for m_children.
     // see manipulation methods below for possible state transition
