@@ -54,7 +54,7 @@ public:
     std::string transforMoveForSGF(int move) const;
     std::string transferMove(int move) const;
     std::string print_candidates(int color,float selectedWinrate);
-    void usingStrengthControl(int color);
+    void usingStrengthControl(int color,bool flag);
     bool accord_case_one(float first,float second);
     bool accord_case_two(float first);
     bool accord_case_three(int color,float _dif);

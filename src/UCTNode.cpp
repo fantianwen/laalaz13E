@@ -507,7 +507,7 @@ std::string UCTNode::print_candidates(int color,float selectedWinrate){
     return candidatesString;
 }
 
-void UCTNode::usingStrengthControl(int color){
+void UCTNode::usingStrengthControl(int color,bool flag){
 
     //case 1: the winrate dif between first and second move is too high(10%),we just use the first move;
     //case 2: the winrate of first is too low, we just select the first move;
@@ -516,50 +516,54 @@ void UCTNode::usingStrengthControl(int color){
         // (1) select move with the best select policy
         // (2) play the best move
 
-    printf("using strength control \n");
-
-    int index = 0;
     case_three = false;
 
-    float first = 0,second = 0;
+    if(flag) {
 
-    for (const auto& child : get_children()) {
+        printf("using strength control \n");
 
-        if(index==0){
-            first = child.get_eval(color);
-        }
+        int index = 0;
 
-        if(index==1){
-            second = child.get_eval(color);
-        }
+        float first = 0, second = 0;
 
-        index ++;
+        for (const auto &child : get_children()) {
 
-        for (const auto& initial_node: this->initial_node_list){
-            if(initial_node.second==child.get_move()){
-                child->m_static_sp = initial_node.first;
+            if (index == 0) {
+                first = child.get_eval(color);
             }
+
+            if (index == 1) {
+                second = child.get_eval(color);
+            }
+
+            index++;
+
+            for (const auto &initial_node: this->initial_node_list) {
+                if (initial_node.second == child.get_move()) {
+                    child->m_static_sp = initial_node.first;
+                }
+            }
+
         }
 
-    }
+        printf("the first wr: %f, the second wr: %f", first, second);
 
-    printf("the first wr: %f, the second wr: %f",first,second);
+        if (accord_case_one(first, second)) {
+            // do nothing
+            printf("accord with case one \n");
+        } else if (accord_case_two(first)) {
+            //do nothing
+            printf("accord with case two \n");
+        } else if (first >= t_min && first <= t_max) {
+            // do nothing
 
-    if(accord_case_one(first,second)){
-        // do nothing
-        printf("accord with case one \n");
-    }else if(accord_case_two(first)){
-        //do nothing
-        printf("accord with case two \n");
-    }else if(first>=t_min && first<=t_max){
-        // do nothing
+            accord_case_three(color, first - t_dif);
+            printf("accord with case three \n");
+            printf("case three move is %d \n", case_three_move);
 
-        accord_case_three(color,first-t_dif);
-        printf("accord with case three \n");
-        printf("case three move is %d \n",case_three_move);
-
-    }else{
-        accord_case_three_one(color);
+        } else {
+            accord_case_three_one(color);
+        }
     }
 
 }
