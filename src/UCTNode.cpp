@@ -352,7 +352,7 @@ public:
 
         // neither has visits, sort on policy prior
         if (a.get_visits() == 0) {
-
+            return a.get_policy() < b.get_policy();
         }
 
 //         both have same non-zero number of visits
