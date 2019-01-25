@@ -363,7 +363,6 @@ public:
 //        }
 //
 //        return a.get_policy() < b.get_policy();
-
     }
 private:
     int m_color;
