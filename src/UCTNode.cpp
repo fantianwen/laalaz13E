@@ -616,6 +616,7 @@ bool UCTNode::accord_case_three_one(int color,int lastmove){
 //        _visit = child->get_visits();
         _move = child->get_move();
         float policy = child.get_static_sp();
+        auto move_policy = static_cast<float>(((float)child.get_visits() / get_visits()));
 
         auto prob = child.get_eval(color);
 
@@ -627,8 +628,10 @@ bool UCTNode::accord_case_three_one(int color,int lastmove){
 
             case_three = true;
 
+
             float dis = calulate_dis_between_moves(lastmove,_move);
-            float evaluation_rate = (1-dis)*policy;
+            float evaluation_rate = (1-dis)*move_policy;
+
             if (evaluation_rate>_evaluation_rate){
                 case_three_move =_move;
                 case_three_winrate = prob;
@@ -647,7 +650,7 @@ bool UCTNode::accord_case_three_one(int color,int lastmove){
             case_three = true;
 
             float dis = calulate_dis_between_moves(lastmove,_move);
-            float evaluation_rate = (1-dis)*policy;
+            float evaluation_rate = (1-dis)*move_policy;
             if (evaluation_rate>_evaluation_rate){
                 case_three_move =_move;
                 case_three_winrate = prob;
@@ -669,7 +672,7 @@ bool UCTNode::accord_case_three_one(int color,int lastmove){
             case_three = true;
 
             float dis = calulate_dis_between_moves(lastmove,_move);
-            float evaluation_rate = (1-dis)*policy;
+            float evaluation_rate = (1-dis)*move_policy;
             if (evaluation_rate>_evaluation_rate){
                 case_three_move =_move;
                 case_three_winrate = prob;
@@ -689,7 +692,7 @@ bool UCTNode::accord_case_three_one(int color,int lastmove){
             case_three = true;
 
             float dis = calulate_dis_between_moves(lastmove,_move);
-            float evaluation_rate = (1-dis)*policy;
+            float evaluation_rate = (1-dis)*move_policy;
             if (evaluation_rate>_evaluation_rate){
                 case_three_move =_move;
                 case_three_winrate = prob;

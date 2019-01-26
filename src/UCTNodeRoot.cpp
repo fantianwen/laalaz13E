@@ -57,7 +57,11 @@ float UCTNode::calulate_dis_between_moves(int move1,int move2) const {
     const auto move2_y = move2%BOARD_SIZE;
 
     const auto dis = (float)pow((move1_x-move2_x)*(move1_x-move2_x)+(move1_y-move2_y)*(move1_y-move2_y),0.5f);
-    return (float)(dis/12*0.4142);
+    const  auto a = (float)(dis/12*0.4142);
+
+    printf("the dis_rate is %f \n",a);
+
+    return a;
 }
 
 
