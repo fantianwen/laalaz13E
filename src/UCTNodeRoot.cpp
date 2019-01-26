@@ -25,6 +25,7 @@
 #include <random>
 #include <utility>
 #include <vector>
+#include <math.h>
 
 #include "UCTNode.h"
 #include "FastBoard.h"
@@ -47,6 +48,18 @@ UCTNode* UCTNode::get_first_child() const {
 
     return m_children.front().get();
 }
+
+float UCTNode::calulate_dis_between_moves(int move1,int move2) const {
+    const auto move1_x = move1/BOARD_SIZE;
+    const auto move1_y = move1%BOARD_SIZE;
+
+    const auto move2_x = move2/BOARD_SIZE;
+    const auto move2_y = move2%BOARD_SIZE;
+
+    const auto dis = (float)pow((move1_x-move2_x)*(move1_x-move2_x)+(move1_y-move2_y)*(move1_y-move2_y),0.5f);
+    return (float)(dis/12*0.4142);
+}
+
 
 void UCTNode::kill_superkos(const KoState& state) {
     for (auto& child : m_children) {

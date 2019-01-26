@@ -434,7 +434,7 @@ int UCTSearch::get_best_move(passflag_t passflag) {
 
     // Make sure best is first
     m_root->sort_children(color);
-    m_root->usingStrengthControl(color);
+    m_root->usingStrengthControl(color,get_last_move());
     m_root->print_candidates(color,selectedWinrate);
 
     // Check whether to randomize the best move proportional
