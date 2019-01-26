@@ -630,7 +630,7 @@ bool UCTNode::accord_case_three_one(int color,int lastmove){
 
 
             float dis = calulate_dis_between_moves(lastmove,_move);
-            float evaluation_rate = (1-dis)*move_policy;
+            float evaluation_rate = (1-dis)*policy;
 
             if (evaluation_rate>_evaluation_rate){
                 case_three_move =_move;
@@ -651,7 +651,7 @@ bool UCTNode::accord_case_three_one(int color,int lastmove){
             case_three = true;
 
             float dis = calulate_dis_between_moves(lastmove,_move);
-            float evaluation_rate = (1-dis)*move_policy;
+            float evaluation_rate = (1-dis)*policy;
             if (evaluation_rate>_evaluation_rate){
                 case_three_move =_move;
                 case_three_winrate = prob;
@@ -674,7 +674,7 @@ bool UCTNode::accord_case_three_one(int color,int lastmove){
             case_three = true;
 
             float dis = calulate_dis_between_moves(lastmove,_move);
-            float evaluation_rate = (1-dis)*move_policy;
+            float evaluation_rate = (1-dis)*policy;
             if (evaluation_rate>_evaluation_rate){
                 case_three_move =_move;
                 case_three_winrate = prob;
@@ -695,7 +695,7 @@ bool UCTNode::accord_case_three_one(int color,int lastmove){
             case_three = true;
 
             float dis = calulate_dis_between_moves(lastmove,_move);
-            float evaluation_rate = (1-dis)*move_policy;
+            float evaluation_rate = (1-dis)*policy;
             if (evaluation_rate>_evaluation_rate){
                 case_three_move =_move;
                 case_three_winrate = prob;
