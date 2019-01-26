@@ -635,6 +635,7 @@ bool UCTNode::accord_case_three_one(int color,int lastmove){
             if (evaluation_rate>_evaluation_rate){
                 case_three_move =_move;
                 case_three_winrate = prob;
+                _evaluation_rate = evaluation_rate;
             }
 //            if(case_three_winrate>prob){
 //
@@ -654,6 +655,7 @@ bool UCTNode::accord_case_three_one(int color,int lastmove){
             if (evaluation_rate>_evaluation_rate){
                 case_three_move =_move;
                 case_three_winrate = prob;
+                _evaluation_rate = evaluation_rate;
             }
 
 //            if(case_three_winrate>prob){
@@ -676,6 +678,7 @@ bool UCTNode::accord_case_three_one(int color,int lastmove){
             if (evaluation_rate>_evaluation_rate){
                 case_three_move =_move;
                 case_three_winrate = prob;
+                _evaluation_rate = evaluation_rate;
             }
 //            if(case_three_winrate>prob){
 //                case_three_move =_move;
@@ -696,6 +699,7 @@ bool UCTNode::accord_case_three_one(int color,int lastmove){
             if (evaluation_rate>_evaluation_rate){
                 case_three_move =_move;
                 case_three_winrate = prob;
+                _evaluation_rate = evaluation_rate;
             }
 
 //            if(case_three_winrate>prob){
