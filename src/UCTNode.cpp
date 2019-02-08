@@ -637,9 +637,6 @@ bool UCTNode::accord_case_three_one(int color,int lastmove){
                 case_three_winrate = prob;
                 _evaluation_rate = evaluation_rate;
             }
-//            if(case_three_winrate>prob){
-//
-//            }
         }
 
         if(prob>=allowedProb3 && prob<=allowedProb2 && policy>=allowedPolicy3){
