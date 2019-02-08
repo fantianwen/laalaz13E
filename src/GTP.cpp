@@ -973,6 +973,9 @@ void GTP::execute(GameState & game, const std::string& xinput) {
             gtp_printf(id, "");
         }
 
+
+
+
         return;
     } else if (command.find("load_training") == 0) {
         std::istringstream cmdstream(command);
