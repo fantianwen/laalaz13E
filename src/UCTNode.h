@@ -69,11 +69,7 @@ public:
     bool first_visit() const;
     bool has_children() const;
     bool expandable(const float min_psa_ratio = 0.0f) const;
-<<<<<<< HEAD
-//    const float c_param = 0.8;
-=======
     const float c_param = 0.8;
->>>>>>> parent of 91ef08a... light
     const float c_param = 1.5;
 //    const float c_param = 2.5;
     float t_dif = 0.03*c_param;
