@@ -54,11 +54,11 @@ public:
     std::string transforMoveForSGF(int move) const;
     std::string transferMove(int move) const;
     std::string print_candidates(int color,float selectedWinrate);
-    void usingStrengthControl(int color);
+    void usingStrengthControl(int color,int lastmove);
     bool accord_case_one(float first,float second);
     bool accord_case_two(float first);
     bool accord_case_three(int color,float _dif);
-    bool accord_case_three_one(int color);
+    bool accord_case_three_one(int color,int lastmove);
     bool get_case_three_flag();
     int get_case_three_move();
     float get_case_three_winrate();
@@ -69,12 +69,12 @@ public:
     bool first_visit() const;
     bool has_children() const;
     bool expandable(const float min_psa_ratio = 0.0f) const;
-//    const float c_param = 0.8;
-//    const float c_param = 1.5;
-    const float c_param = 2.5;
+    const float c_param = 0.8;
+    const float c_param = 1.5;
+//    const float c_param = 2.5;
     float t_dif = 0.03*c_param;
-    float t_max = 0.55;
-    float t_min = 0.35;
+    float t_max = 0.60;
+    float t_min = 0.40;
     float t_uniq = 0.08*c_param;// the gap
     void invalidate();
     void set_active(const bool active);
@@ -99,6 +99,7 @@ public:
                            GameState& state);
 
     UCTNode* get_first_child() const;
+    float calulate_dis_between_moves(int move1,int move2) const ;
     UCTNode* get_nopass_child(FastState& state) const;
     std::unique_ptr<UCTNode> find_child(const int move);
     void inflate_all_children();

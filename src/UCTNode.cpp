@@ -290,7 +290,7 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root) {
 
     // Count parentvisits manually to avoid issues with transpositions.
     auto total_visited_policy = 0.0f;
-    auto parentvisits = size_t{0};
+    auto parentvisits =size_t{0};
     for (const auto& child : m_children) {
         if (child.valid()) {
             parentvisits += child.get_visits();
@@ -303,7 +303,7 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root) {
     const auto numerator = std::sqrt(double(parentvisits));
     // todo how it works
     const auto fpu_reduction = (is_root ? cfg_fpu_root_reduction : cfg_fpu_reduction) * std::sqrt(total_visited_policy);
-    // Estimated eval for unknown nodes = original parent NN eval - reduction
+    // Estimated eval forknown nodes = original parent NN eval - reduction
     const auto fpu_eval = get_net_eval(color) - fpu_reduction;
 
     auto best = static_cast<UCTNodePointer*>(nullptr);
@@ -507,9 +507,9 @@ std::string UCTNode::print_candidates(int color,float selectedWinrate){
     return candidatesString;
 }
 
-void UCTNode::usingStrengthControl(int color){
+void UCTNode::usingStrengthControl(int color,int lastMove){
 
-    //case 1: the winrate dif between first and second move is too high(10%),we just use the first move;
+            //case 1: the winrate dif between first and second move is too high(10%),we just use the first move;
     //case 2: the winrate of first is too low, we just select the first move;
     //case 3: intermedidate winrate (choose the move having the biggest winning rate within a T_dif )
     //case 4: hign win rate: for fast decrease of the winrate, we just select the worst move
@@ -522,6 +522,7 @@ void UCTNode::usingStrengthControl(int color){
     case_three = false;
 
     float first = 0,second = 0;
+
 
     for (const auto& child : get_children()) {
 
@@ -559,7 +560,7 @@ void UCTNode::usingStrengthControl(int color){
         printf("case three move is %d \n",case_three_move);
 
     }else{
-        accord_case_three_one(color);
+        accord_case_three_one(color,lastMove);
     }
 
 }
@@ -592,8 +593,7 @@ bool UCTNode::accord_case_three(int color,float threshold){
     return false;
 }
 
-
-bool UCTNode::accord_case_three_one(int color){
+bool UCTNode::accord_case_three_one(int color,int lastmove){
 
     float firstMoveRate;
     float allowedProb1,allowedProb2,allowedProb3,allowedProb4;
@@ -610,11 +610,13 @@ bool UCTNode::accord_case_three_one(int color){
 
     case_three_move = get_first_child()->get_move();
     case_three_winrate = get_first_child()->get_eval(color);
+    float _evaluation_rate = 0 ;
 
     for (const auto& child : get_children()) {
 //        _visit = child->get_visits();
         _move = child->get_move();
         float policy = child.get_static_sp();
+        auto move_policy = static_cast<float>(((float)child.get_visits() / get_visits()));
 
         auto prob = child.get_eval(color);
 
@@ -625,9 +627,15 @@ bool UCTNode::accord_case_three_one(int color){
             printf("policy is: %f,allowedPolicy is:%f.",policy,allowedPolicy4);
 
             case_three = true;
-            if(case_three_winrate>prob){
+
+
+            float dis = calulate_dis_between_moves(lastmove,_move);
+            float evaluation_rate = (1-dis)*policy;
+
+            if (evaluation_rate>_evaluation_rate){
                 case_three_move =_move;
                 case_three_winrate = prob;
+                _evaluation_rate = evaluation_rate;
             }
         }
 
@@ -638,10 +646,19 @@ bool UCTNode::accord_case_three_one(int color){
             printf("policy is: %f,allowedPolicy is:%f.",policy,allowedPolicy3);
 
             case_three = true;
-            if(case_three_winrate>prob){
+
+            float dis = calulate_dis_between_moves(lastmove,_move);
+            float evaluation_rate = (1-dis)*policy;
+            if (evaluation_rate>_evaluation_rate){
                 case_three_move =_move;
                 case_three_winrate = prob;
+                _evaluation_rate = evaluation_rate;
             }
+
+//            if(case_three_winrate>prob){
+//                case_three_move =_move;
+//                case_three_winrate = prob;
+//            }
         }
 
 
@@ -652,10 +669,18 @@ bool UCTNode::accord_case_three_one(int color){
             printf("policy is: %f,allowedPolicy is:%f.",policy,allowedPolicy2);
 
             case_three = true;
-            if(case_three_winrate>prob){
+
+            float dis = calulate_dis_between_moves(lastmove,_move);
+            float evaluation_rate = (1-dis)*policy;
+            if (evaluation_rate>_evaluation_rate){
                 case_three_move =_move;
                 case_three_winrate = prob;
+                _evaluation_rate = evaluation_rate;
             }
+//            if(case_three_winrate>prob){
+//                case_three_move =_move;
+//                case_three_winrate = prob;
+//            }
         }
 
         if(prob>=allowedProb1 && policy>allowedPolicy1){
@@ -666,10 +691,18 @@ bool UCTNode::accord_case_three_one(int color){
 
             case_three = true;
 
-            if(case_three_winrate>prob){
+            float dis = calulate_dis_between_moves(lastmove,_move);
+            float evaluation_rate = (1-dis)*policy;
+            if (evaluation_rate>_evaluation_rate){
                 case_three_move =_move;
                 case_three_winrate = prob;
+                _evaluation_rate = evaluation_rate;
             }
+
+//            if(case_three_winrate>prob){
+//                case_three_move =_move;
+//                case_three_winrate = prob;
+//            }
 
         }
     }
