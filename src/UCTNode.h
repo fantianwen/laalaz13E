@@ -73,8 +73,8 @@ public:
 //    const float c_param = 1.5;
     const float c_param = 2.5;
     float t_dif = 0.03*c_param;
-    float t_max = 0.55;
-    float t_min = 0.35;
+    float t_max = 0.60;
+    float t_min = 0.40;
     float t_uniq = 0.08*c_param;// the gap
     void invalidate();
     void set_active(const bool active);
