@@ -346,23 +346,17 @@ public:
     bool operator()(const UCTNodePointer& a,
                     const UCTNodePointer& b) {
         // if visits are not same, sort on visits
-//        if (a.get_visits() != b.get_visits()) {
-//            return a.get_visits() < b.get_visits();
-//        }
-//
-//        // neither has visits, sort on policy prior
-//        if (a.get_visits() == 0) {
-//
-//        }
-
-        // both have same non-zero number of visits
-//        return a.get_eval(m_color) < b.get_eval(m_color);
-
-        if(a.get_visits()>0 && b.get_visits()>0){
-            return a.get_eval(m_color)<b.get_eval(m_color);
+        if (a.get_visits() != b.get_visits()) {
+            return a.get_visits() < b.get_visits();
         }
 
-        return a.get_policy() < b.get_policy();
+        // neither has visits, sort on policy prior
+        if (a.get_visits() == 0) {
+            return a.get_policy() < b.get_policy();
+        }
+
+        // both have same non-zero number of visits
+        return a.get_eval(m_color) < b.get_eval(m_color);
 
     }
 private:
@@ -628,15 +622,21 @@ bool UCTNode::accord_case_three_one(int color,int lastmove){
 
             case_three = true;
 
+//
+//            float dis = calulate_dis_between_moves(lastmove,_move);
+//            float evaluation_rate = (1-dis)*policy;
+//
+//            if (evaluation_rate>_evaluation_rate){
+//                case_three_move =_move;
+//                case_three_winrate = prob;
+//                _evaluation_rate = evaluation_rate;
+//            }
 
-            float dis = calulate_dis_between_moves(lastmove,_move);
-            float evaluation_rate = (1-dis)*policy;
-
-            if (evaluation_rate>_evaluation_rate){
+            if(case_three_winrate>prob){
                 case_three_move =_move;
                 case_three_winrate = prob;
-                _evaluation_rate = evaluation_rate;
             }
+
         }
 
         if(prob>=allowedProb3 && prob<=allowedProb2 && policy>=allowedPolicy3){
@@ -647,18 +647,18 @@ bool UCTNode::accord_case_three_one(int color,int lastmove){
 
             case_three = true;
 
-            float dis = calulate_dis_between_moves(lastmove,_move);
-            float evaluation_rate = (1-dis)*policy;
-            if (evaluation_rate>_evaluation_rate){
-                case_three_move =_move;
-                case_three_winrate = prob;
-                _evaluation_rate = evaluation_rate;
-            }
-
-//            if(case_three_winrate>prob){
+//            float dis = calulate_dis_between_moves(lastmove,_move);
+//            float evaluation_rate = (1-dis)*policy;
+//            if (evaluation_rate>_evaluation_rate){
 //                case_three_move =_move;
 //                case_three_winrate = prob;
+//                _evaluation_rate = evaluation_rate;
 //            }
+
+            if(case_three_winrate>prob){
+                case_three_move =_move;
+                case_three_winrate = prob;
+            }
         }
 
 
@@ -670,17 +670,18 @@ bool UCTNode::accord_case_three_one(int color,int lastmove){
 
             case_three = true;
 
-            float dis = calulate_dis_between_moves(lastmove,_move);
-            float evaluation_rate = (1-dis)*policy;
-            if (evaluation_rate>_evaluation_rate){
-                case_three_move =_move;
-                case_three_winrate = prob;
-                _evaluation_rate = evaluation_rate;
-            }
-//            if(case_three_winrate>prob){
+//            float dis = calulate_dis_between_moves(lastmove,_move);
+//            float evaluation_rate = (1-dis)*policy;
+//            if (evaluation_rate>_evaluation_rate){
 //                case_three_move =_move;
 //                case_three_winrate = prob;
+//                _evaluation_rate = evaluation_rate;
 //            }
+
+            if(case_three_winrate>prob){
+                case_three_move =_move;
+                case_three_winrate = prob;
+            }
         }
 
         if(prob>=allowedProb1 && policy>allowedPolicy1){
@@ -691,18 +692,18 @@ bool UCTNode::accord_case_three_one(int color,int lastmove){
 
             case_three = true;
 
-            float dis = calulate_dis_between_moves(lastmove,_move);
-            float evaluation_rate = (1-dis)*policy;
-            if (evaluation_rate>_evaluation_rate){
-                case_three_move =_move;
-                case_three_winrate = prob;
-                _evaluation_rate = evaluation_rate;
-            }
-
-//            if(case_three_winrate>prob){
+//            float dis = calulate_dis_between_moves(lastmove,_move);
+//            float evaluation_rate = (1-dis)*policy;
+//            if (evaluation_rate>_evaluation_rate){
 //                case_three_move =_move;
 //                case_three_winrate = prob;
+//                _evaluation_rate = evaluation_rate;
 //            }
+
+            if(case_three_winrate>prob){
+                case_three_move =_move;
+                case_three_winrate = prob;
+            }
 
         }
     }
