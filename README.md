@@ -307,6 +307,11 @@ If interrupted, training can be resumed with:
 - [ ] CUDA specific version using cuDNN or cuBLAS.
 - [ ] AMD specific version using MIOpen/ROCm.
 
+- [ ] autoFight after traing for a Loop to verify whether current weight is stronger than the perious one.
+- [ ] to set bash params in the autoFight scripts.
+- [ ] put auto training in the super-pc in school.
+
+
 # Related links
 
 * Status page of the distributed effort:
