@@ -734,7 +734,7 @@ int UCTSearch::think(int color, passflag_t passflag) {
 
     myprintf("Thinking at most %.1f seconds...\n", time_for_move/100.0f);
 
-    m_root->get_static_policy(m_network,m_rootstate);
+//    m_root->get_static_policy(m_network,m_rootstate);
 
     // create a sorted list of legal moves (make sure we
     // play something legal and decent even in time trouble)
