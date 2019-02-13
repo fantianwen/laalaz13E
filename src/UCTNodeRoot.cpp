@@ -183,10 +183,10 @@ void UCTNode::prepare_root_node(Network & network, int color,
     float root_eval;
     const auto had_children = has_children();
     if (expandable()) {
-        printf("this node can expand \n");
+//        printf("this node can expand \n");
         create_children(network, nodes, root_state, root_eval, 0.0f);
     }else{
-        printf("this node can not expand \n");
+//        printf("this node can not expand \n");
     }
     if (had_children) {
         root_eval = get_net_eval(color);
