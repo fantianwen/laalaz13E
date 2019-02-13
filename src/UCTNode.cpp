@@ -355,14 +355,7 @@ public:
             return a.get_policy() < b.get_policy();
         }
 
-//         both have same non-zero number of visits
         return a.get_eval(m_color) < b.get_eval(m_color);
-
-//        if(a.get_visits()>0 && b.get_visits()>0){
-//            return a.get_eval(m_color)<b.get_eval(m_color);
-//        }
-//
-//        return a.get_policy() < b.get_policy();
     }
 private:
     int m_color;
