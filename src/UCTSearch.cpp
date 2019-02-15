@@ -443,11 +443,9 @@ int UCTSearch::get_best_move(passflag_t passflag) {
     auto first_child = m_root->get_first_child();
     assert(first_child != nullptr);
 
-    int bestmove;
-    float besteval;
+    int bestmove=first_child->get_move();
+    float besteval = first_child->first_visit() ? 0.5f : first_child->get_raw_eval(color);
 
-    bestmove= first_child->get_move();
-    besteval= first_child->first_visit() ? 0.5f : first_child->get_raw_eval(color);
     selectedWinrate = besteval;
 
     // do we want to fiddle with the best move because of the rule set?

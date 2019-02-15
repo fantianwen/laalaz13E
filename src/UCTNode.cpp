@@ -375,7 +375,6 @@ void UCTNode::sort_children(int color) {
     std::stable_sort(rbegin(m_children), rend(m_children), NodeComp(color));
 }
 
-
 std::string UCTNode::transforMoveForSGF(int move) const{
 
     std::ostringstream result;
