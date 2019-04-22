@@ -337,7 +337,7 @@ class TFProcess:
                                output_channels=self.RESIDUAL_FILTERS)
         # Residual tower
         for _ in range(0, self.RESIDUAL_BLOCKS):
-            flow = se lf.residual_block(flow, self.RESIDUAL_FILTERS)
+            flow = self.residual_block(flow, self.RESIDUAL_FILTERS)
 
         # Policy head
         conv_pol = self.conv_block(flow, filter_size=1,
