@@ -757,6 +757,7 @@ int UCTSearch::think(int color, passflag_t passflag) {
             last_update = elapsed_centis;
             dump_analysis(static_cast<int>(m_playouts));
         }
+
         keeprunning  = is_running();
         keeprunning &= !stop_thinking(elapsed_centis, time_for_move);
         keeprunning &= have_alternate_moves(elapsed_centis, time_for_move);
@@ -779,6 +780,7 @@ int UCTSearch::think(int color, passflag_t passflag) {
     // display search info
     myprintf("\n");
     dump_stats(m_rootstate, *m_root);
+    // save current training data
     Training::record(m_network, m_rootstate, *m_root);
 
     Time elapsed;

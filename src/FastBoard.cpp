@@ -243,15 +243,22 @@ void FastBoard::remove_neighbour(const int vtx, const int color) {
     }
 }
 
-int FastBoard::calc_reach_color(int color) const {
-    auto reachable = 0;
+float FastBoard::calc_reach_color(int color) const {
+    float reachable = 0;
     auto bd = std::vector<bool>(m_numvertices, false);
     auto open = std::queue<int>();
     for (auto i = 0; i < m_boardsize; i++) {
         for (auto j = 0; j < m_boardsize; j++) {
             auto vertex = get_vertex(i, j);
             if (m_state[vertex] == color) {
-                reachable++;
+                if(i<3 || j<3 || i>10 || j> 10){
+                    reachable = reachable-0.8;
+                }else if(i == 3 || j == 3 || i == 9 || j == 9){
+                    reachable++;
+                }else{
+                    reachable = reachable+0.8;
+                }
+
                 bd[vertex] = true;
                 open.push(vertex);
             }
@@ -276,8 +283,8 @@ int FastBoard::calc_reach_color(int color) const {
 
 // Needed for scoring passed out games not in MC playouts
 float FastBoard::area_score(float komi) const {
-    auto white = calc_reach_color(WHITE);
-    auto black = calc_reach_color(BLACK);
+    float white = calc_reach_color(WHITE);
+    float black = calc_reach_color(BLACK);
     return black - white - komi;
 }
 

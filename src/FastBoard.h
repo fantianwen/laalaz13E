@@ -119,7 +119,7 @@ protected:
     int m_boardsize;
     int m_sidevertices;
 
-    int calc_reach_color(int color) const;
+    float calc_reach_color(int color) const;
 
     int count_neighbours(const int color, const int i) const;
     void merge_strings(const int ip, const int aip);

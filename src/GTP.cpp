@@ -702,6 +702,7 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                 }
                 int move = search->think(game.get_to_move(), UCTSearch::NORMAL);
                 game.play_move(move);
+
                 game.display_state();
 
                 movecount++;
@@ -734,7 +735,6 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                     break;
                 }
             } while (true);
-
 
             myprintf("winner is : %s\n", winner ? "W" : "B");
 
