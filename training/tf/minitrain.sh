@@ -7,7 +7,7 @@ for((i=0;i<5000;i=i+1)) ; do
     resign_rate=$((i%10))
     timestamp=$(date +%y%m%d_%H%M%S)_${suffix}
     latest_weight=$(ls -1c *.txt | head -1)
-    leelaz_cmd="../build/leelaz -m 8 -n -d -r $resign_rate -t 1 -p 800 --noponder --gtp --gpu $gpunum"
+    leelaz_cmd="../../build/leelaz -m 8 -n -d -r $resign_rate -t 1 -p 800 --noponder --gtp --gpu $gpunum"
     sleep 5
     echo leelaz_cmd : $leelaz_cmd
     echo latest_weight : $latest_weight
