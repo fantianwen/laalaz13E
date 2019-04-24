@@ -252,11 +252,11 @@ float FastBoard::calc_reach_color(int color) const {
             auto vertex = get_vertex(i, j);
             if (m_state[vertex] == color) {
                 if(i<3 || j<3 || i>10 || j> 10){
-                    reachable = reachable-0.8;
+                    reachable = reachable+0.8;
                 }else if(i == 3 || j == 3 || i == 9 || j == 9){
                     reachable++;
                 }else{
-                    reachable = reachable+0.8;
+                    reachable = reachable+1.2;
                 }
 
                 bd[vertex] = true;
@@ -285,6 +285,7 @@ float FastBoard::calc_reach_color(int color) const {
 float FastBoard::area_score(float komi) const {
     float white = calc_reach_color(WHITE);
     float black = calc_reach_color(BLACK);
+
     return black - white - komi;
 }
 
