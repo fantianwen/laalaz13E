@@ -180,7 +180,7 @@ class ChunkParser:
 def get_chunks(data_prefix):
     x = glob.glob(data_prefix + "*.gz")
     x.sort()
-    x = x[int(len(x)*0.8):]
+    # x = x[int(len(x)*0.8):]
 
     return x
 
