@@ -49,7 +49,7 @@ public:
                          GameState& state, float& eval,
                          float min_psa_ratio = 0.0f);
 
-    const std::vector<UCTNodePointer>& get_children() const;
+    std::vector<UCTNodePointer>& get_children();
     void sort_children(int color);
     std::string transforMoveForSGF(int move) const;
     std::string transferMove(int move) const;

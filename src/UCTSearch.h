@@ -24,6 +24,7 @@
 #include <memory>
 #include <string>
 #include <tuple>
+#include <vector>
 #include <future>
 
 #include "ThreadPool.h"
@@ -32,7 +33,7 @@
 #include "GameState.h"
 #include "UCTNode.h"
 #include "Network.h"
-
+#include "UCTNodePointer.h"
 
 class SearchResult {
 public:
@@ -97,7 +98,10 @@ public:
         std::numeric_limits<int>::max() / 2;
 
     UCTSearch(GameState& g, Network & network);
+
+    std::vector<UCTNodePointer>& think_s(int color, passflag_t passflag = NORMAL);
     int think(int color, passflag_t passflag = NORMAL);
+
     void set_playout_limit(int playouts);
     void set_visit_limit(int visits);
     void ponder();
@@ -112,7 +116,7 @@ private:
 
     float get_min_psa_ratio() const;
     void dump_stats(FastState& state, UCTNode& parent);
-    void tree_stats(const UCTNode& node);
+    void tree_stats(UCTNode& node);
     std::string get_pv(FastState& state, UCTNode& parent);
     void dump_analysis(int playouts);
     bool should_resign(passflag_t passflag, float besteval);
@@ -123,6 +127,9 @@ private:
     bool stop_thinking(int elapsed_centis = 0, int time_for_move = 0) const;
 
     int get_best_move(passflag_t passflag);
+
+    std::vector<UCTNodePointer>& get_children();
+
     void update_root();
     bool advance_to_new_rootstate();
     void output_analysis(FastState & state, UCTNode & parent);

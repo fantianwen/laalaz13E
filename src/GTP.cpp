@@ -28,6 +28,7 @@
 #include <limits>
 #include <memory>
 #include <random>
+#include <vector>
 #include <string>
 #include <vector>
 #include <boost/algorithm/string.hpp>
@@ -42,6 +43,7 @@
 #include "Training.h"
 #include "UCTSearch.h"
 #include "Utils.h"
+#include "UCTNodePointer.h"
 
 using namespace Utils;
 
@@ -77,6 +79,7 @@ float cfg_softmax_temp;
 float cfg_fpu_reduction;
 float cfg_fpu_root_reduction;
 std::string cfg_weightsfile;
+std::string cfg_weightsfile_s;
 std::string cfg_logfile;
 FILE* cfg_logfile_handle;
 bool cfg_quiet;
@@ -86,9 +89,11 @@ bool cfg_cpu_only;
 int cfg_analyze_interval_centis;
 
 std::unique_ptr<Network> GTP::s_network;
+std::unique_ptr<Network> GTP::s_network_s;
 
-void GTP::initialize(std::unique_ptr<Network>&& net) {
+void GTP::initialize(std::unique_ptr<Network>&& net,std::unique_ptr<Network>&& net_s) {
     s_network = std::move(net);
+    s_network_s = std::move(net_s);
 
     bool result;
     std::string message;
@@ -126,6 +131,7 @@ void GTP::setup_default_parameters() {
     cfg_timemanage = TimeManagement::AUTO;
     cfg_lagbuffer_cs = 100;
     cfg_weightsfile = leelaz_file("best-network");
+    cfg_weightsfile_s = cfg_weightsfile;
 #ifdef USE_OPENCL
     cfg_gpus = { };
     cfg_sgemm_exhaustive = false;
@@ -251,6 +257,7 @@ std::string GTP::get_life_list(const GameState & game, bool live) {
 void GTP::execute(GameState & game, const std::string& xinput) {
     std::string input;
     static auto search = std::make_unique<UCTSearch>(game, *s_network);
+    static auto search_s = std::make_unique<UCTSearch>(game, *s_network_s);
 
     bool transform_lowercase = true;
 
@@ -440,14 +447,49 @@ void GTP::execute(GameState & game, const std::string& xinput) {
             {
                 game.set_to_move(who);
                 // Outputs winrate and pvs for lz-genmove_analyze
-                int move = search->think(who);
+                search_s->think_s(who);
+
+                //=======================888=======================
+
+
+                printf("begin to show candidates moves \n");
+
+                std::string candidatesString = "";
+
+                for (const auto& child : search->think_s(who)) {
+//                    index++;
+                    if(child->get_visits()>0) {
+                        int visitCount = child->get_visits();
+                        auto prob = child.get_eval(who);
+                        std::string ver = game.move_to_text(child.get_move());
+                        auto move = child->get_move();
+                        auto s_sp = child->get_static_sp();
+
+                        candidatesString +=
+                                ver+"\t"+" "+" "+
+                                            std::to_string(prob)+"\t"+" "+" "+
+                                            std::to_string(visitCount)+"\t"+" "+" "+
+                                            std::to_string(s_sp)+"\n";
+                    }
+                }
+
+                candidatesString+="]";
+
+                printf("%s,",candidatesString.c_str());
+
+                printf("show end!");
+
+                //=======================================================
+
+//                int move_s = search->think(who);
+
 
                 std::string last_comments = search->get_last_comments(who);
 
-                game.play_move(who,move,last_comments);
+                game.play_move(who, search->think_s(who).front().get_move(),last_comments);
 //                game.set_last_move_canidates(candidates);
 
-                std::string vertex = game.move_to_text(move);
+                std::string vertex = game.move_to_text(search->think_s(who).front().get_move());
                 if (!analysis_output) {
                     gtp_printf(id, "%s", vertex.c_str());
                 } else {
@@ -755,7 +797,6 @@ void GTP::execute(GameState & game, const std::string& xinput) {
             game.display_state();
 
         } while (game.get_passes() < 2 && !game.has_resigned());
-
         return;
     } else if (command.find("go") == 0) {
         int move = search->think(game.get_to_move());

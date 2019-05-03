@@ -70,6 +70,7 @@ static void parse_commandline(int argc, char *argv[]) {
                         "Resign when winrate is less than x%.\n"
                         "-1 uses 10% but scales for handicap.")
         ("weights,w", po::value<std::string>()->default_value(cfg_weightsfile), "File with network weights.")
+        ("weights_s,ws",po::value<std::string>()->default_value(cfg_weightsfile_s), "File with network_s file, used to mix.")
         ("logfile,l", po::value<std::string>(), "File to log input/output to.")
         ("quiet,q", "Disable all diagnostic output.")
         ("timemanage", po::value<std::string>()->default_value("auto"),
@@ -195,10 +196,18 @@ static void parse_commandline(int argc, char *argv[]) {
         cfg_logfile_handle = fopen(cfg_logfile.c_str(), "a");
     }
 
+    //FAN read weight file
     cfg_weightsfile = vm["weights"].as<std::string>();
     if (vm["weights"].defaulted() && !boost::filesystem::exists(cfg_weightsfile)) {
         printf("A network weights file is required to use the program.\n");
         printf("By default, Leela Zero looks for it in %s.\n", cfg_weightsfile.c_str());
+        exit(EXIT_FAILURE);
+    }
+
+    cfg_weightsfile_s = vm["weights_s"].as<std::string>();
+    if (vm["weights1"].defaulted() && !boost::filesystem::exists(cfg_weightsfile_s)) {
+        printf("A network weights file1 (TO MIX) is required to use the program.\n");
+        printf("By default, Leela Zero looks for it in %s.\n", cfg_weightsfile_s.c_str());
         exit(EXIT_FAILURE);
     }
 
@@ -378,10 +387,14 @@ static void parse_commandline(int argc, char *argv[]) {
 
 static void initialize_network() {
     auto network = std::make_unique<Network>();
-    auto playouts = std::min(cfg_max_playouts, cfg_max_visits);
-    network->initialize(playouts, cfg_weightsfile);
+    auto network_s = std::make_unique<Network>();
 
-    GTP::initialize(std::move(network));
+    auto playouts = std::min(cfg_max_playouts, cfg_max_visits);
+
+    network->initialize(playouts, cfg_weightsfile);
+    network_s->initialize(playouts,cfg_weightsfile_s);
+
+    GTP::initialize(std::move(network),std::move(network_s));
 }
 
 // Setup global objects after command line has been parsed

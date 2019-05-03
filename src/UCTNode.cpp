@@ -196,7 +196,7 @@ void UCTNode::link_nodelist(std::atomic<int>& nodecount,
     m_min_psa_ratio_children = skipped_children ? min_psa_ratio : 0.0f;
 }
 
-const std::vector<UCTNodePointer>& UCTNode::get_children() const {
+std::vector<UCTNodePointer>& UCTNode::get_children() {
     return m_children;
 }
 

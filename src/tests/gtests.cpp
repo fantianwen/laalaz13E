@@ -74,7 +74,10 @@ public:
         auto playouts = std::min(cfg_max_playouts, cfg_max_visits);
         auto network = std::make_unique<Network>();
         network->initialize(playouts, cfg_weightsfile);
-        GTP::initialize(std::move(network));
+
+        auto network_s = std::make_unique<Network>();
+        network_s->initialize(playouts, cfg_weightsfile_s);
+        GTP::initialize(std::move(network),std::move(network_s));
     }
     void TearDown() {}
 };
