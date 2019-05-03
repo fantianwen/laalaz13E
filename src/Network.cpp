@@ -494,13 +494,9 @@ void Network::initialize(int playouts, const std::string & weightsfile) {
         }
     }
 
-    size_t channels, residual_blocks,channels_s,residual_blocks_s;
+    size_t channels, residual_blocks;
     std::tie(channels, residual_blocks) = load_network_file(weightsfile);
     if (channels == 0) {
-        exit(EXIT_FAILURE);
-    }
-
-    if (channels_s == 0) {
         exit(EXIT_FAILURE);
     }
 
