@@ -205,7 +205,7 @@ static void parse_commandline(int argc, char *argv[]) {
     }
 
     cfg_weightsfile_s = vm["weights_s"].as<std::string>();
-    if (vm["weights1"].defaulted() && !boost::filesystem::exists(cfg_weightsfile_s)) {
+    if (vm["weights_s"].defaulted() && !boost::filesystem::exists(cfg_weightsfile_s)) {
         printf("A network weights file1 (TO MIX) is required to use the program.\n");
         printf("By default, Leela Zero looks for it in %s.\n", cfg_weightsfile_s.c_str());
         exit(EXIT_FAILURE);
