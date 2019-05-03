@@ -70,7 +70,7 @@ static void parse_commandline(int argc, char *argv[]) {
                         "Resign when winrate is less than x%.\n"
                         "-1 uses 10% but scales for handicap.")
         ("weights,w", po::value<std::string>()->default_value(cfg_weightsfile), "File with network weights.")
-        ("weights_s,ws",po::value<std::string>()->default_value(cfg_weightsfile_s), "File with network_s file, used to mix.")
+        ("z_weights,z",po::value<std::string>()->default_value(cfg_weightsfile_s), "File with network_s file, used to mix.")
         ("logfile,l", po::value<std::string>(), "File to log input/output to.")
         ("quiet,q", "Disable all diagnostic output.")
         ("timemanage", po::value<std::string>()->default_value("auto"),
@@ -204,8 +204,8 @@ static void parse_commandline(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    cfg_weightsfile_s = vm["weights_s"].as<std::string>();
-    if (vm["weights_s"].defaulted() && !boost::filesystem::exists(cfg_weightsfile_s)) {
+    cfg_weightsfile_s = vm["z_weights"].as<std::string>();
+    if (vm["z_weights"].defaulted() && !boost::filesystem::exists(cfg_weightsfile_s)) {
         printf("A network weights file1 (TO MIX) is required to use the program.\n");
         printf("By default, Leela Zero looks for it in %s.\n", cfg_weightsfile_s.c_str());
         exit(EXIT_FAILURE);
