@@ -64,6 +64,7 @@ extern float cfg_fpu_reduction;
 extern float cfg_fpu_root_reduction;
 extern std::string cfg_logfile;
 extern std::string cfg_weightsfile;
+extern std::string cfg_weightsfile_s;
 extern FILE* cfg_logfile_handle;
 extern bool cfg_quiet;
 extern std::string cfg_options_str;
@@ -80,8 +81,8 @@ static constexpr size_t MiB = 1024LL * 1024LL;
 */
 class GTP {
 public:
-    static std::unique_ptr<Network> s_network;
-    static void initialize(std::unique_ptr<Network>&& network);
+    static std::unique_ptr<Network> s_network, s_network_s;
+    static void initialize(std::unique_ptr<Network>&& network,std::unique_ptr<Network>&& network_s);
     static void execute(GameState & game, const std::string& xinput);
     static void setup_default_parameters();
 private:

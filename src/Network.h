@@ -129,7 +129,7 @@ private:
 #ifdef USE_HALF
     void select_precision(int channels);
 #endif
-    std::unique_ptr<ForwardPipe> m_forward;
+    std::unique_ptr<ForwardPipe> m_forward,m_forward_s;
 #ifdef USE_OPENCL_SELFCHECK
     void compare_net_outputs(const Netresult& data, const Netresult& ref);
     std::unique_ptr<ForwardPipe> m_forward_cpu;

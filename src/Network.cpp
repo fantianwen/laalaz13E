@@ -494,10 +494,13 @@ void Network::initialize(int playouts, const std::string & weightsfile) {
         }
     }
 
-    // Load network from file
-    size_t channels, residual_blocks;
+    size_t channels, residual_blocks,channels_s,residual_blocks_s;
     std::tie(channels, residual_blocks) = load_network_file(weightsfile);
     if (channels == 0) {
+        exit(EXIT_FAILURE);
+    }
+
+    if (channels_s == 0) {
         exit(EXIT_FAILURE);
     }
 
@@ -522,6 +525,7 @@ void Network::initialize(int playouts, const std::string & weightsfile) {
     // Move biases to batchnorm means to make the output match without having
     // to separately add the biases.
     auto bias_size = m_fwd_weights->m_conv_biases.size();
+
     for (auto i = size_t{0}; i < bias_size; i++) {
         auto means_size = m_fwd_weights->m_batchnorm_means[i].size();
         for (auto j = size_t{0}; j < means_size; j++) {
@@ -534,6 +538,7 @@ void Network::initialize(int playouts, const std::string & weightsfile) {
         m_bn_val_w1[i] -= m_fwd_weights->m_conv_val_b[i];
         m_fwd_weights->m_conv_val_b[i] = 0.0f;
     }
+
 
     for (auto i = size_t{0}; i < m_bn_pol_w1.size(); i++) {
         m_bn_pol_w1[i] -= m_fwd_weights->m_conv_pol_b[i];
@@ -564,6 +569,7 @@ void Network::initialize(int playouts, const std::string & weightsfile) {
 #else //!USE_OPENCL
     myprintf("Initializing CPU-only evaluation.\n");
     m_forward = init_net(channels, std::make_unique<CPUPipe>());
+    m_forward_s = init_net(channels_s, std::make_unique<CPUPipe>());
 #endif
 
     // Need to estimate size before clearing up the pipe.
@@ -964,6 +970,7 @@ std::pair<int, int> Network::get_symmetry(const std::pair<int, int>& vertex,
     return {x, y};
 }
 
+//FAN maybe should be copied
 size_t Network::get_estimated_size() {
     if (estimated_size != 0) {
         return estimated_size;
