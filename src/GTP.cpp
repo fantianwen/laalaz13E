@@ -537,9 +537,9 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                         }
                     }
 
-                    if(mixed_eval<0.03){
-                        selected_move = FastBoard::PASS;
-                    }
+//                    if(mixed_eval<0.03){
+//                        selected_move = FastBoard::PASS;
+//                    }
 
                     for (const auto& child : candidates) {
 //                    index++;
