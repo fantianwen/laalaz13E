@@ -87,6 +87,7 @@ std::string cfg_options_str;
 bool cfg_benchmark;
 bool cfg_cpu_only;
 int cfg_analyze_interval_centis;
+int last_move;
 
 std::unique_ptr<Network> GTP::s_network;
 std::unique_ptr<Network> GTP::s_network_s;
@@ -451,12 +452,76 @@ void GTP::execute(GameState & game, const std::string& xinput) {
 
                 //=======================888=======================
 
-
                 printf("begin to show candidates moves \n");
 
                 std::string candidatesString = "";
 
-                for (const auto& child : search->think_s(who)) {
+                std::vector<UCTNodePointer>& candidates = search->think_s(who);
+                std::vector<UCTNodePointer>& candidates_s = search_s->think_s(who);
+
+                int selected_move = candidates_s.front().get_move();
+                float mixed_eval = 0;
+
+                float alpha = 0.8;
+
+                for (const auto& child_s : candidates_s) {
+
+                    float temp_mix_eval ;
+                    int temp_move;
+
+                    float eval_s = child_s.get_eval(who);
+                    int move_s = child_s.get_move();
+
+                    for (const auto& child : candidates){
+
+                        float eval = child.get_eval(who);
+                        int move = child.get_move();
+
+                        if(move == move_s){
+                            temp_mix_eval = eval_s*alpha+eval*(1-alpha);
+                            break;
+                        }else{
+                            temp_mix_eval = eval_s*alpha;
+                        }
+                        temp_move = move_s;
+                    }
+
+                    if(temp_mix_eval>mixed_eval){
+                        mixed_eval = temp_mix_eval;
+                        selected_move = temp_move;
+                    }
+                }
+
+
+                for (const auto& child : candidates) {
+
+                    float temp_mix_eval ;
+                    int temp_move;
+
+                    float eval = child.get_eval(who);
+                    int move = child.get_move();
+
+                    for (const auto& child_s : candidates_s){
+
+                        float eval_s = child_s.get_eval(who);
+                        int move_s = child_s.get_move();
+
+                        if(move == move_s){
+                            temp_mix_eval = eval_s*alpha+eval*(1-alpha);
+                            break;
+                        }else{
+                            temp_mix_eval = eval*(1-alpha);
+                        }
+                        temp_move = move;
+                    }
+
+                    if(temp_mix_eval>mixed_eval){
+                        mixed_eval = temp_mix_eval;
+                        selected_move = temp_move;
+                    }
+                }
+
+                for (const auto& child : candidates) {
 //                    index++;
                     if(child->get_visits()>0) {
                         int visitCount = child->get_visits();
@@ -483,13 +548,14 @@ void GTP::execute(GameState & game, const std::string& xinput) {
 
 //                int move_s = search->think(who);
 
-
                 std::string last_comments = search->get_last_comments(who);
 
-                game.play_move(who, search->think_s(who).front().get_move(),last_comments);
+                game.play_move(who, selected_move,last_comments);
 //                game.set_last_move_canidates(candidates);
 
-                std::string vertex = game.move_to_text(search->think_s(who).front().get_move());
+                last_move = selected_move;
+
+                std::string vertex = game.move_to_text(last_move);
                 if (!analysis_output) {
                     gtp_printf(id, "%s", vertex.c_str());
                 } else {
@@ -682,7 +748,7 @@ void GTP::execute(GameState & game, const std::string& xinput) {
         return;
     } else if(command.find("lastmove") == 0){
 
-        int move = search->get_last_move();
+        int move = last_move;
 
         std::ostringstream result;
 
