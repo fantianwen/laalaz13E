@@ -464,93 +464,103 @@ void GTP::execute(GameState & game, const std::string& xinput) {
 
                 float alpha = 0.8;
 
-                for (const auto& child_s : candidates_s) {
+                if (candidates.size()<=0 || candidates_s.size()<=0) {
+                    selected_move = FastBoard::PASS;
+                    game.play_move(who, selected_move,"");
 
-                    float temp_mix_eval ;
-                    int temp_move;
+                }else{
+                    for (const auto& child_s : candidates_s) {
 
-                    float eval_s = child_s.get_eval(who);
-                    int move_s = child_s.get_move();
-
-                    for (const auto& child : candidates){
-
-                        float eval = child.get_eval(who);
-                        int move = child.get_move();
-
-                        if(move == move_s){
-                            temp_mix_eval = eval_s*alpha+eval*(1-alpha);
-                            break;
-                        }else{
-                            temp_mix_eval = eval_s*alpha;
-                        }
-                        temp_move = move_s;
-                    }
-
-                    if(temp_mix_eval>mixed_eval){
-                        mixed_eval = temp_mix_eval;
-                        selected_move = temp_move;
-                    }
-                }
-
-
-                for (const auto& child : candidates) {
-
-                    float temp_mix_eval ;
-                    int temp_move;
-
-                    float eval = child.get_eval(who);
-                    int move = child.get_move();
-
-                    for (const auto& child_s : candidates_s){
+                        float temp_mix_eval ;
+                        int temp_move;
 
                         float eval_s = child_s.get_eval(who);
                         int move_s = child_s.get_move();
 
-                        if(move == move_s){
-                            temp_mix_eval = eval_s*alpha+eval*(1-alpha);
-                            break;
-                        }else{
-                            temp_mix_eval = eval*(1-alpha);
+                        for (const auto& child : candidates){
+
+                            float eval = child.get_eval(who);
+                            int move = child.get_move();
+
+                            if(move == move_s){
+                                temp_mix_eval = eval_s*alpha+eval*(1-alpha);
+                                break;
+                            }else{
+                                temp_mix_eval = eval_s*alpha;
+                            }
+                            temp_move = move_s;
                         }
-                        temp_move = move;
+
+                        if(temp_mix_eval>mixed_eval){
+                            mixed_eval = temp_mix_eval;
+                            selected_move = temp_move;
+                        }
                     }
 
-                    if(temp_mix_eval>mixed_eval){
-                        mixed_eval = temp_mix_eval;
-                        selected_move = temp_move;
-                    }
-                }
 
-                for (const auto& child : candidates) {
+                    for (const auto& child : candidates) {
+
+                        float temp_mix_eval ;
+                        int temp_move;
+
+                        float eval = child.get_eval(who);
+                        int move = child.get_move();
+
+                        for (const auto& child_s : candidates_s){
+
+                            float eval_s = child_s.get_eval(who);
+                            int move_s = child_s.get_move();
+
+                            if(move == move_s){
+                                temp_mix_eval = eval_s*alpha+eval*(1-alpha);
+                                break;
+                            }else{
+                                temp_mix_eval = eval*(1-alpha);
+                            }
+                            temp_move = move;
+                        }
+
+                        if(temp_mix_eval>mixed_eval){
+                            mixed_eval = temp_mix_eval;
+                            selected_move = temp_move;
+                        }
+                    }
+
+                    if(mixed_eval<0.05){
+                        selected_move = FastBoard::PASS;
+                    }
+
+                    for (const auto& child : candidates) {
 //                    index++;
-                    if(child->get_visits()>0) {
-                        int visitCount = child->get_visits();
-                        auto prob = child.get_eval(who);
-                        std::string ver = game.move_to_text(child.get_move());
-                        auto move = child->get_move();
-                        auto s_sp = child->get_static_sp();
+                        if(child->get_visits()>0) {
+                            int visitCount = child->get_visits();
+                            auto prob = child.get_eval(who);
+                            std::string ver = game.move_to_text(child.get_move());
+                            auto move = child->get_move();
+                            auto s_sp = child->get_static_sp();
 
-                        candidatesString +=
-                                ver+"\t"+" "+" "+
-                                            std::to_string(prob)+"\t"+" "+" "+
-                                            std::to_string(visitCount)+"\t"+" "+" "+
-                                            std::to_string(s_sp)+"\n";
+                            candidatesString +=
+                                    ver+"\t"+" "+" "+
+                                    std::to_string(prob)+"\t"+" "+" "+
+                                    std::to_string(visitCount)+"\t"+" "+" "+
+                                    std::to_string(s_sp)+"\n";
+                        }
                     }
-                }
 
-                candidatesString+="]";
+                    candidatesString+="]";
 
-                printf("%s,",candidatesString.c_str());
+                    printf("%s,",candidatesString.c_str());
 
-                printf("show end!");
+                    printf("show end!");
 
-                //=======================================================
+                    //=======================================================
 
 //                int move_s = search->think(who);
 
-                std::string last_comments = search->get_last_comments(who);
+                    std::string last_comments = search->get_last_comments(who);
+                    game.play_move(who, selected_move,last_comments);
+                }
 
-                game.play_move(who, selected_move,last_comments);
 //                game.set_last_move_canidates(candidates);
 
                 last_move = selected_move;

@@ -898,7 +898,7 @@ std::vector<UCTNodePointer>& UCTSearch::think_s(int color, passflag_t passflag) 
 
     m_rootstate.stop_clock(color);
 //    if (!m_root->has_children()) {
-////        return FastBoard::PASS;
+//        return FastBoard::PASS;
 //    }
 
     // display search info
@@ -916,7 +916,6 @@ std::vector<UCTNodePointer>& UCTSearch::think_s(int color, passflag_t passflag) 
                  (m_playouts * 100.0) / (elapsed_centis + 1));
     }
     //int bestmove = get_best_move(passflag);
-
 
     // Copy the root state. Use to check for tree re-use in future calls.
     m_last_rootstate = std::make_unique<GameState>(m_rootstate);
