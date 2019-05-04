@@ -459,7 +459,19 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                 std::vector<UCTNodePointer>& candidates = search->think_s(who);
                 std::vector<UCTNodePointer>& candidates_s = search_s->think_s(who);
 
-                int selected_move = candidates_s.front().get_move();
+                int total_count_candidates =0;
+
+                int total_count_candidates_s =0;
+
+                for (const auto& child : candidates) {
+                    total_count_candidates+=child.get_visits();
+                }
+
+                for (const auto& child_s : candidates_s) {
+                    total_count_candidates_s+=child_s.get_visits();
+                }
+
+                int selected_move = 0;
                 float mixed_eval = 0;
 
                 float alpha = 0.8;
@@ -467,19 +479,18 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                 if (candidates.size()<=0 || candidates_s.size()<=0) {
                     selected_move = FastBoard::PASS;
                     game.play_move(who, selected_move,"");
-
                 }else{
                     for (const auto& child_s : candidates_s) {
 
-                        float temp_mix_eval ;
+                        float temp_mix_eval;
                         int temp_move;
 
-                        float eval_s = child_s.get_eval(who);
+                        float eval_s = child_s.get_visits()/total_count_candidates_s;
                         int move_s = child_s.get_move();
 
                         for (const auto& child : candidates){
 
-                            float eval = child.get_eval(who);
+                            float eval = child.get_visits()/total_count_candidates;
                             int move = child.get_move();
 
                             if(move == move_s){
@@ -503,12 +514,12 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                         float temp_mix_eval ;
                         int temp_move;
 
-                        float eval = child.get_eval(who);
+                        float eval = child.get_visits()/total_count_candidates;
                         int move = child.get_move();
 
                         for (const auto& child_s : candidates_s){
 
-                            float eval_s = child_s.get_eval(who);
+                            float eval_s = child_s.get_visits()/total_count_candidates_s;
                             int move_s = child_s.get_move();
 
                             if(move == move_s){
@@ -526,7 +537,7 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                         }
                     }
 
-                    if(mixed_eval<0.05){
+                    if(mixed_eval<0.03){
                         selected_move = FastBoard::PASS;
                     }
 
@@ -557,8 +568,8 @@ void GTP::execute(GameState & game, const std::string& xinput) {
 
 //                int move_s = search->think(who);
 
-                    std::string last_comments = search->get_last_comments(who);
-                    game.play_move(who, selected_move,last_comments);
+//                    std::string last_comments = search->get_last_comments(who);
+                    game.play_move(who, selected_move,"");
                 }
 
 //                game.set_last_move_canidates(candidates);
