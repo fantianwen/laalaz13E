@@ -447,16 +447,18 @@ void GTP::execute(GameState & game, const std::string& xinput) {
             {
                 game.set_to_move(who);
                 // Outputs winrate and pvs for lz-genmove_analyze
-                search_s->think_s(who);
+//                search_s->think_s(who);
 
                 //=======================888=======================
-
 
                 printf("begin to show candidates moves \n");
 
                 std::string candidatesString = "";
 
-                for (const auto& child : search->think_s(who)) {
+
+                std::vector<UCTNodePointer>& candidates_s = search->think_s(who);
+
+                for (const auto& child : candidates_s) {
 //                    index++;
                     if(child->get_visits()>0) {
                         int visitCount = child->get_visits();
@@ -482,7 +484,6 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                 //=======================================================
 
 //                int move_s = search->think(who);
-
 
                 std::string last_comments = search->get_last_comments(who);
 
