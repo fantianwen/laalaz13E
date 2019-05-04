@@ -471,6 +471,8 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                     total_count_candidates_s+=child_s.get_visits();
                 }
 
+                printf("the total visit count is: %d and %d",total_count_candidates,total_count_candidates_s);
+
                 int selected_move = 0;
                 float mixed_eval = 0;
 
@@ -482,15 +484,18 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                 }else{
                     for (const auto& child_s : candidates_s) {
 
+
                         float temp_mix_eval;
                         int temp_move;
 
-                        float eval_s = child_s.get_visits()/total_count_candidates_s;
+                        float eval_s = (float)child_s.get_visits()/total_count_candidates_s;
                         int move_s = child_s.get_move();
+
+                        printf("the eval is %f",eval_s);
 
                         for (const auto& child : candidates){
 
-                            float eval = child.get_visits()/total_count_candidates;
+                            float eval = (float)child.get_visits()/total_count_candidates;
                             int move = child.get_move();
 
                             if(move == move_s){
@@ -515,12 +520,13 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                         float temp_mix_eval ;
                         int temp_move;
 
-                        float eval = child.get_visits()/total_count_candidates;
+                        float eval = (float)child.get_visits()/total_count_candidates;
+
                         int move = child.get_move();
 
                         for (const auto& child_s : candidates_s){
 
-                            float eval_s = child_s.get_visits()/total_count_candidates_s;
+                            float eval_s = (float)child_s.get_visits()/total_count_candidates_s;
                             int move_s = child_s.get_move();
 
                             if(move == move_s){
@@ -538,6 +544,8 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                             selected_move = temp_move;
                         }
                     }
+
+                    printf("the mixed eval is :%f",mixed_eval);
 
                     if(mixed_eval<0.03){
                         selected_move = FastBoard::PASS;
