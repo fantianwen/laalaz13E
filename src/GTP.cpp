@@ -499,8 +499,9 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                             }else{
                                 temp_mix_eval = eval_s*alpha;
                             }
-                            temp_move = move_s;
                         }
+
+                        temp_move = move_s;
 
                         if(temp_mix_eval>mixed_eval){
                             mixed_eval = temp_mix_eval;
@@ -528,8 +529,9 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                             }else{
                                 temp_mix_eval = eval*(1-alpha);
                             }
-                            temp_move = move;
                         }
+
+                        temp_move = move;
 
                         if(temp_mix_eval>mixed_eval){
                             mixed_eval = temp_mix_eval;
@@ -537,9 +539,9 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                         }
                     }
 
-//                    if(mixed_eval<0.03){
-//                        selected_move = FastBoard::PASS;
-//                    }
+                    if(mixed_eval<0.03){
+                        selected_move = FastBoard::PASS;
+                    }
 
                     for (const auto& child : candidates) {
 //                    index++;
