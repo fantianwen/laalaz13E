@@ -114,6 +114,14 @@ bool UCTNodePointer::valid() const {
     return true;
 }
 
+float UCTNodePointer::get_mix_eval(){
+    return m_mix_eval;
+}
+
+float UCTNodePointer::set_mix_eval(float mix_eval){
+    m_mix_eval = mix_eval;
+}
+
 int UCTNodePointer::get_visits() const {
     auto v = m_data.load();
     if (is_inflated(v)) return read_ptr(v)->get_visits();

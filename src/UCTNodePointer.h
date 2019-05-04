@@ -52,7 +52,6 @@ private:
 
     static void increment_tree_size(size_t sz);
     static void decrement_tree_size(size_t sz);
-
     // the raw storage used here.
     // if bit [1:0] is 1, m_data is the actual pointer.
     // if bit [1:0] is 0, bit [31:16] is the vertex value, bit [63:32] is the policy
@@ -93,6 +92,7 @@ public:
     UCTNodePointer(std::int16_t vertex, float policy);
     UCTNodePointer(const UCTNodePointer&) = delete;
 
+    float m_mix_eval;
 
     bool is_inflated() const {
         return is_inflated(m_data.load());
@@ -116,6 +116,9 @@ public:
 
     // proxy of UCTNode methods which can be called without
     // constructing UCTNode
+
+    float set_mix_eval(float mix_eval);
+    float get_mix_eval();
     bool valid() const;
     int get_visits() const;
     float get_policy() const;

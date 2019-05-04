@@ -915,8 +915,7 @@ std::vector<UCTNodePointer>& UCTSearch::think_s(int color, passflag_t passflag) 
                  static_cast<int>(m_playouts),
                  (m_playouts * 100.0) / (elapsed_centis + 1));
     }
-    //int bestmove = get_best_move(passflag);
-
+//    int bestmove = get_best_move(passflag);
 
     // Copy the root state. Use to check for tree re-use in future calls.
     m_last_rootstate = std::make_unique<GameState>(m_rootstate);

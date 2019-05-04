@@ -241,6 +241,10 @@ float UCTNode::get_policy() const {
     return m_policy;
 }
 
+void UCTNode::set_mix_eval(float mix_eval){
+    m_mix_eval = mix_eval;
+}
+
 void UCTNode::set_policy(float policy) {
     m_policy = policy;
 }
@@ -345,24 +349,24 @@ public:
     NodeComp(int color) : m_color(color) {};
     bool operator()(const UCTNodePointer& a,
                     const UCTNodePointer& b) {
-        // if visits are not same, sort on visits
-//        if (a.get_visits() != b.get_visits()) {
-//            return a.get_visits() < b.get_visits();
-//        }
-//
-//        // neither has visits, sort on policy prior
-//        if (a.get_visits() == 0) {
-//
-//        }
-
-        // both have same non-zero number of visits
-//        return a.get_eval(m_color) < b.get_eval(m_color);
-
-        if(a.get_visits()>0 && b.get_visits()>0){
-            return a.get_eval(m_color)<b.get_eval(m_color);
+//         if visits are not same, sort on visits
+        if (a.get_visits() != b.get_visits()) {
+            return a.get_visits() < b.get_visits();
         }
 
-        return a.get_policy() < b.get_policy();
+        // neither has visits, sort on policy prior
+        if (a.get_visits() == 0) {
+
+        }
+
+//         both have same non-zero number of visits
+        return a.get_eval(m_color) < b.get_eval(m_color);
+
+//        if(a.get_visits()>0 && b.get_visits()>0){
+//            return a.get_eval(m_color)<b.get_eval(m_color);
+//        }
+//
+//        return a.get_policy() < b.get_policy();
 
     }
 private:

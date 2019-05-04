@@ -455,10 +455,54 @@ void GTP::execute(GameState & game, const std::string& xinput) {
 
                 std::string candidatesString = "";
 
+                std::vector<UCTNodePointer> seclected_candidates;
 
-                std::vector<UCTNodePointer>& candidates_s = search->think_s(who);
+                std::vector<UCTNodePointer>& candidates = search->think_s(who);
+                std::vector<UCTNodePointer>& candidates_s = search_s->think_s(who);
 
-                for (const auto& child : candidates_s) {
+                for (auto& candidate_s: candidates_s){
+
+                    int move_s = candidate_s.get_move();
+
+                    int index = 0;
+                    bool have = false;
+                    for(auto& candidate: candidates){
+
+                        index++;
+
+                        int move = candidate.get_move();
+                        if(move_s == move && !have){
+                            float eval_s = candidate_s.get_eval(who);
+                            float eval = candidate.get_eval(who);
+                            float new_eval = eval_s*0.8+eval*0.2;
+                            candidate_s.set_mix_eval(new_eval);
+                            have = true;
+                        }
+
+                        if (index >= candidates.size() && !have){
+                            candidate.set_mix_eval(candidate.get_eval(who)*0.2);
+//                            candidates_s.push_back(candidate);
+                        }
+                    }
+
+                    if(!have){
+                        candidate_s.set_mix_eval(candidate_s.get_eval(who)*0.8);
+                    }
+                }
+
+                int move_selected = candidates_s.front().get_move();
+
+                float mixed_eval = 0;
+
+                for (auto& child : candidates_s) {
+
+                    float mix_eval = child.get_mix_eval();
+
+                    if(mixed_eval<mix_eval){
+                        mixed_eval = mix_eval;
+                        move_selected = child.get_move();
+                    }
+
 //                    index++;
                     if(child->get_visits()>0) {
                         int visitCount = child->get_visits();
@@ -468,7 +512,7 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                         auto s_sp = child->get_static_sp();
 
                         candidatesString +=
-                                ver+"\t"+" "+" "+
+                                std::to_string(child.get_mix_eval())+"\t"+" "+" "+
                                             std::to_string(prob)+"\t"+" "+" "+
                                             std::to_string(visitCount)+"\t"+" "+" "+
                                             std::to_string(s_sp)+"\n";
@@ -487,7 +531,7 @@ void GTP::execute(GameState & game, const std::string& xinput) {
 
                 std::string last_comments = search->get_last_comments(who);
 
-                game.play_move(who, search->think_s(who).front().get_move(),last_comments);
+                game.play_move(who, move_selected,last_comments);
 //                game.set_last_move_canidates(candidates);
 
                 std::string vertex = game.move_to_text(search->think_s(who).front().get_move());

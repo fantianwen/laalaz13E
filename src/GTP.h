@@ -104,5 +104,4 @@ private:
     static size_t remove_overhead(size_t s) { return s * 10LL / 11LL; }
 };
 
-
 #endif

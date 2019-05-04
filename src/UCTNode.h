@@ -85,6 +85,7 @@ public:
     int get_visits() const;
     float get_policy() const;
     void set_policy(float policy);
+    void set_mix_eval(float mix_eval);
     float get_eval(int tomove) const;
     float get_raw_eval(int tomove, int virtual_loss = 0) const;
     float get_net_eval(int tomove) const;
@@ -133,6 +134,9 @@ private:
     float m_policy;
     // Original net eval for this node (not children).
     float m_net_eval{0.0f};
+
+    float m_mix_eval;
+
     std::atomic<double> m_blackevals{0.0};
     std::atomic<Status> m_status{ACTIVE};
     std::vector<Network::PolicyVertexPair> initial_node_list;
