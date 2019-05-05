@@ -476,7 +476,7 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                 int selected_move = 0;
                 float mixed_eval = 0;
 
-                float alpha = 0.8;
+                float alpha = 0.1;
 
                 if (candidates.size()<=0 || candidates_s.size()<=0) {
                     selected_move = FastBoard::PASS;
@@ -578,8 +578,13 @@ void GTP::execute(GameState & game, const std::string& xinput) {
 
 //                int move_s = search->think(who);
 
-//                    std::string last_comments = search->get_last_comments(who);
-                    game.play_move(who, selected_move,"");
+                    std::string last_comments = search->get_last_comments(who);
+
+                    std::string last_comments_s = search_s->get_last_comments(who);
+
+                    std::string last_comments_mix = last_comments+"\n"+last_comments_s;
+
+                    game.play_move(who, selected_move,last_comments_mix);
                 }
 
 //                game.set_last_move_canidates(candidates);
@@ -1110,9 +1115,6 @@ void GTP::execute(GameState & game, const std::string& xinput) {
             out.close();
             gtp_printf(id, "");
         }
-
-
-
 
         return;
     } else if (command.find("load_training") == 0) {
