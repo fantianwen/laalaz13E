@@ -460,21 +460,19 @@ std::string UCTNode::print_candidates(int color,float selectedWinrate){
 
     printf("begin to show candidates moves \n");
 
-    std::string candidatesString = "LB";
+    std::string candidatesString = "";
 
     int index = 0;
-
-    for (const auto& child : get_children()){
-        index++;
-        if(child->get_visits()>0) {
-            auto move = child->get_move();
-            candidatesString += "["+transforMoveForSGF(move)+":"+std::to_string(index)+"]";
-        }
-    }
+//
+//    for (const auto& child : get_children()){
+//        index++;
+//        if(child->get_visits()>0) {
+//            auto move = child->get_move();
+//            candidatesString += "["+transforMoveForSGF(move)+":"+std::to_string(index)+"]";
+//        }
+//    }
 
     index = 0;
-
-    candidatesString+="C[";
 
     candidatesString+=std::to_string(selectedWinrate)+"::\n";
 
@@ -497,8 +495,6 @@ std::string UCTNode::print_candidates(int color,float selectedWinrate){
                     std::to_string(s_sp)+"\n";
         }
     }
-
-    candidatesString+="]";
 
     printf("%s,",candidatesString.c_str());
 

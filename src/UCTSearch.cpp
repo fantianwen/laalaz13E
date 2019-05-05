@@ -417,6 +417,7 @@ int UCTSearch::get_last_move(){
     return m_rootstate.get_last_move();
 }
 
+
 std::string UCTSearch::get_last_comments(int color) {
 
     std::ostringstream comments;

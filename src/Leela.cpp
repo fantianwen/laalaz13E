@@ -309,6 +309,15 @@ static void parse_commandline(int argc, char *argv[]) {
         }
     }
 
+    if (vm.count("y_alpha")){
+
+        alpha = vm["y_alpha"].as<float>();
+
+        if (alpha == 0) {
+            alpha = 0;
+        }
+    }
+
     if (vm.count("resignpct")) {
         cfg_resignpct = vm["resignpct"].as<int>();
     }

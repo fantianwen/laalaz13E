@@ -107,6 +107,7 @@ public:
     void ponder();
     int get_last_move();
     std::string get_last_comments(int color);
+
     bool is_running() const;
     void increment_playouts();
     SearchResult play_simulation(GameState& currstate, UCTNode* const node);

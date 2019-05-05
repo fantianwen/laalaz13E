@@ -22,6 +22,8 @@
 #include <mutex>
 #include <cstdarg>
 #include <cstdio>
+#include <iostream>
+#include <sstream>
 
 #include <boost/filesystem.hpp>
 
@@ -104,6 +106,41 @@ void Utils::myprintf(const char *fmt, ...) {
     va_start(ap, fmt);
     myprintf_base(fmt, ap);
     va_end(ap);
+}
+
+std::string Utils::convertVertex(int move){
+
+    std::ostringstream result;
+
+    int column = move % 15;
+    int row = move / 15;
+
+    column--;
+    row--;
+
+    assert(move == FastBoard::PASS
+           || move == FastBoard::RESIGN
+           || (row >= 0 && row < 13));
+    assert(move == FastBoard::PASS
+           || move == FastBoard::RESIGN
+           || (column >= 0 && column < 13));
+
+    if (move >= 0 && move <= 15*15) {
+
+        if(column>=8){
+            result << static_cast<char>('A' + column + 1);
+        } else{
+            result << static_cast<char>('A' + column);
+        }
+        result << (row + 1);
+    } else if (move == FastBoard::PASS) {
+        result << "pass";
+    } else if (move == FastBoard::RESIGN) {
+        result << "resign";
+    } else {
+        result << "error";
+    }
+    return result.str();
 }
 
 void Utils::myprintf_error(const char *fmt, ...) {

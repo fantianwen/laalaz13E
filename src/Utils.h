@@ -38,6 +38,8 @@ namespace Utils {
     void log_input(const std::string& input);
     bool input_pending();
 
+    std::string convertVertex(int vertex);
+
     template<class T>
     void atomic_add(std::atomic<T> &f, T d) {
         T old = f.load();
