@@ -507,7 +507,9 @@ void GTP::execute(GameState & game, const std::string& xinput) {
 
                         temp_move = move_s;
 
-                        mixed_info+=Utils::convertVertex(temp_move)+"\t"+std::to_string(temp_mix_eval)+"\n";
+                        if(temp_mix_eval>0){
+                            mixed_info+=Utils::convertVertex(temp_move)+"\t"+std::to_string(temp_mix_eval)+"\n";
+                        }
 
                         if(temp_mix_eval>mixed_eval){
                             mixed_eval = temp_mix_eval;
@@ -540,7 +542,9 @@ void GTP::execute(GameState & game, const std::string& xinput) {
 
                         temp_move = move;
 
-                        mixed_info+=Utils::convertVertex(temp_move)+"\t"+std::to_string(temp_mix_eval)+"\n";
+                        if(temp_mix_eval>0){
+                            mixed_info+=Utils::convertVertex(temp_move)+"\t"+std::to_string(temp_mix_eval)+"\n";
+                        }
 
                         if(temp_mix_eval>mixed_eval){
                             mixed_eval = temp_mix_eval;
