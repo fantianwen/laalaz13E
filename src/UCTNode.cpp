@@ -472,8 +472,6 @@ std::string UCTNode::print_candidates(int color,float selectedWinrate){
 //        }
 //    }
 
-    index = 0;
-
     candidatesString+=std::to_string(selectedWinrate)+"::\n";
 
     candidatesString+="index\tvertex\twr\tvisit\tsp\ts_sp\n";

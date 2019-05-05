@@ -507,12 +507,13 @@ void GTP::execute(GameState & game, const std::string& xinput) {
 
                         temp_move = move_s;
 
+                        mixed_info+=Utils::convertVertex(temp_move)+"\t"+std::to_string(temp_mix_eval)+"\n";
+
                         if(temp_mix_eval>mixed_eval){
                             mixed_eval = temp_mix_eval;
                             selected_move = temp_move;
                         }
 
-                        mixed_info+=Utils::convertVertex(selected_move)+"\t"+std::to_string(mixed_eval)+"\n";
                     }
 
                     for (const auto& child : candidates) {
@@ -539,11 +540,13 @@ void GTP::execute(GameState & game, const std::string& xinput) {
 
                         temp_move = move;
 
+                        mixed_info+=Utils::convertVertex(temp_move)+"\t"+std::to_string(temp_mix_eval)+"\n";
+
                         if(temp_mix_eval>mixed_eval){
                             mixed_eval = temp_mix_eval;
                             selected_move = temp_move;
                         }
-                        mixed_info+=Utils::convertVertex(selected_move)+"\t"+std::to_string(mixed_eval)+"\n";
+
                     }
 
                     printf("the mixed eval is :%f",mixed_eval);
@@ -552,42 +555,15 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                         selected_move = FastBoard::PASS;
                     }
 
-//                    for (const auto& child : candidates) {
-////                    index++;
-//                        if(child->get_visits()>0) {
-//                            int visitCount = child->get_visits();
-//                            auto prob = child.get_eval(who);
-//                            std::string ver = game.move_to_text(child.get_move());
-//                            auto move = child->get_move();
-//                            auto s_sp = child->get_static_sp();
-//
-//                            candidatesString +=
-//                                    ver+"\t"+" "+" "+
-//                                    std::to_string(prob)+"\t"+" "+" "+
-//                                    std::to_string(visitCount)+"\t"+" "+" "+
-//                                    std::to_string(s_sp)+"\n";
-//                        }
-//                    }
-//
-//                    candidatesString+="]";
-//
-//                    printf("%s,",candidatesString.c_str());
-//
-//                    printf("show end!");
-
-                    //=======================================================
-
-//                int move_s = search->think(who);
-
                     std::string last_comments = search->get_last_comments(who);
 
                     std::string last_comments_s = search_s->get_last_comments(who);
 
-                    std::string last_comments_mix = last_comments_s+"\n"+last_comments+"\n"+mixed_info;
+                    mixed_info += last_comments_s+"\n"+last_comments+"\n";
 
-                    last_comments_mix+="]";
+                    mixed_info+="]";
 
-                    game.play_move(who, selected_move,last_comments_mix);
+                    game.play_move(who, selected_move,mixed_info);
                 }
 
 //                game.set_last_move_canidates(candidates);
