@@ -510,7 +510,7 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                         if(temp_mix_eval>0){
                             std::string movestr = Utils::convertVertex(temp_move);
                             std::string::size_type idx;
-                            id = mixed_info.find(movestr);
+                            idx = mixed_info.find(movestr);
                             if(idx==std::string::npos){
                                 mixed_info+=Utils::convertVertex(temp_move)+"\t"+std::to_string(temp_mix_eval)+"\n";
                             }
@@ -550,7 +550,7 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                         if(temp_mix_eval>0){
                             std::string movestr = Utils::convertVertex(temp_move);
                             std::string::size_type idx;
-                            id = mixed_info.find(movestr);
+                            idx = mixed_info.find(movestr);
                             if(idx==std::string::npos){
                                 mixed_info+=Utils::convertVertex(temp_move)+"\t"+std::to_string(temp_mix_eval)+"\n";
                             }
