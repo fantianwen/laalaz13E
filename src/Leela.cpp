@@ -71,6 +71,7 @@ static void parse_commandline(int argc, char *argv[]) {
                         "-1 uses 10% but scales for handicap.")
         ("weights,w", po::value<std::string>()->default_value(cfg_weightsfile), "File with network weights.")
         ("z_weights,z",po::value<std::string>()->default_value(cfg_weightsfile_s), "File with network_s file, used to mix.")
+        ("y_alpha,y",po::value<float>(), "mixed paramenter.")
         ("logfile,l", po::value<std::string>(), "File to log input/output to.")
         ("quiet,q", "Disable all diagnostic output.")
         ("timemanage", po::value<std::string>()->default_value("auto"),

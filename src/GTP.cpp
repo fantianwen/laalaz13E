@@ -449,8 +449,6 @@ void GTP::execute(GameState & game, const std::string& xinput) {
             {
                 game.set_to_move(who);
                 // Outputs winrate and pvs for lz-genmove_analyze
-                search_s->think_s(who);
-
                 //=======================888=======================
 
                 printf("begin to show candidates moves \n");
