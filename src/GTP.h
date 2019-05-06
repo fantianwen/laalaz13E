@@ -36,6 +36,7 @@ extern int cfg_max_threads;
 extern int cfg_max_playouts;
 extern int cfg_max_visits;
 extern float alpha;
+extern int currentMoveNumber;
 extern size_t cfg_max_memory;
 extern size_t cfg_max_tree_size;
 extern int cfg_max_cache_ratio_percent;

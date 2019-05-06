@@ -55,6 +55,7 @@ int cfg_max_threads;
 int cfg_max_playouts;
 int cfg_max_visits;
 float alpha;
+int currentMoveNumber;
 size_t cfg_max_memory;
 size_t cfg_max_tree_size;
 int cfg_max_cache_ratio_percent;
@@ -420,6 +421,8 @@ void GTP::execute(GameState & game, const std::string& xinput) {
         auto analysis_output = command.find("lz-genmove_analyze") == 0;
         auto interval = 0;
 
+        currentMoveNumber++;
+
         std::istringstream cmdstream(command);
         std::string tmp;
 
@@ -482,7 +485,6 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                     game.play_move(who, selected_move,"");
                 }else{
                     for (const auto& child_s : candidates_s) {
-
 
                         float temp_mix_eval;
                         int temp_move;
@@ -568,6 +570,14 @@ void GTP::execute(GameState & game, const std::string& xinput) {
 
                     if(mixed_eval<0.03){
                         selected_move = FastBoard::PASS;
+                    }
+
+                    if (currentMoveNumber<5){
+                        selected_move = candidates.front().get_move();
+                    }else if(currentMoveNumber<15){
+                        selected_move = candidates_s.front().get_move();
+                    }else {
+                        selected_move = candidates.front().get_move();
                     }
 
                     std::string last_comments = search->get_last_comments(who);

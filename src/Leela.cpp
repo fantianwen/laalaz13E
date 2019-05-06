@@ -230,6 +230,7 @@ static void parse_commandline(int argc, char *argv[]) {
         cfg_sgemm_exhaustive = true;
     }
 
+
     if (vm.count("tune-only")) {
         cfg_tune_only = true;
     }
@@ -403,6 +404,9 @@ static void initialize_network() {
 
     network->initialize(playouts, cfg_weightsfile);
     network_s->initialize(playouts,cfg_weightsfile_s);
+
+    //FAN initialize currentNumber
+    currentMoveNumber = 0;
 
     GTP::initialize(std::move(network),std::move(network_s));
 }
