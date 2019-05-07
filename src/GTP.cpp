@@ -470,7 +470,7 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                     game.play_move(who, selected_move,"");
                 }else{
                     UCTNodePointer& first = candidates.front();
-                    int move_normal = first.get_move();
+                    selected_move = first.get_move();
                     float eval_normal = first.get_eval(who);
                     float eval_c_s = eval_normal-0.05;
 
@@ -496,10 +496,6 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                             }
 
                         }
-                    }
-
-                    if(selected_move <= 0){
-                        selected_move = move_normal;
                     }
 
                     std::string last_comments = search->get_last_comments(who);
