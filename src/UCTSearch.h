@@ -129,6 +129,8 @@ private:
 
     int get_best_move(passflag_t passflag);
 
+    void init_static_sp();
+
     std::vector<UCTNodePointer>& get_children();
 
     void update_root();

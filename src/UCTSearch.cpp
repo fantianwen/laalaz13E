@@ -439,6 +439,10 @@ std::vector<UCTNodePointer>& UCTSearch::get_children() {
 
 }
 
+void UCTSearch::init_static_sp(){
+    m_root->initialize_static_sp();
+}
+
 int UCTSearch::get_best_move(passflag_t passflag) {
     int color = m_rootstate.board.get_to_move();
 
@@ -920,6 +924,8 @@ std::vector<UCTNodePointer>& UCTSearch::think_s(int color, passflag_t passflag) 
 
     // Copy the root state. Use to check for tree re-use in future calls.
     m_last_rootstate = std::make_unique<GameState>(m_rootstate);
+
+    m_root->initialize_static_sp();
 
     return get_children();
 }

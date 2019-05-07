@@ -55,6 +55,7 @@ public:
     std::string transferMove(int move) const;
     std::string print_candidates(int color,float selectedWinrate);
 
+    void initialize_static_sp();
     void usingStrengthControl(int color,int lastmove);
     bool accord_case_one(float first,float second);
     bool accord_case_two(float first);

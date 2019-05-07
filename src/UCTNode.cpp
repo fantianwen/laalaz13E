@@ -501,6 +501,16 @@ std::string UCTNode::print_candidates(int color,float selectedWinrate){
     return candidatesString;
 }
 
+void UCTNode::initialize_static_sp(){
+    for (const auto& child : get_children()) {
+        for (const auto& initial_node: this->initial_node_list){
+            if(initial_node.second==child.get_move()){
+                child->m_static_sp = initial_node.first;
+            }
+        }
+    }
+}
+
 void UCTNode::usingStrengthControl(int color,int lastMove){
 
             //case 1: the winrate dif between first and second move is too high(10%),we just use the first move;
