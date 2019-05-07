@@ -474,7 +474,6 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                     float eval_normal = first.get_eval(who);
                     float eval_c_s = eval_normal-0.05;
 
-
                     float selected_eval_s = 0;
 
                     for (const auto& child_s : candidates_s) {
@@ -484,6 +483,7 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                         if(eval_c>=eval_c_s && sp_s>=0.1){
                             if (eval_c>selected_eval_s){
                                 selected_move = move_s;
+                                selected_eval_s = eval_c;
                             }
                         }
                     }
@@ -491,7 +491,6 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                     if(selected_move <= 0){
                         selected_move = move_normal;
                     }
-
 
                     std::string last_comments = search->get_last_comments(who);
                     std::string last_comments_s = search_s->get_last_comments(who);
