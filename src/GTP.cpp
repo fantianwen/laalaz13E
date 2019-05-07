@@ -474,7 +474,7 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                     float eval_normal = first.get_eval(who);
                     float eval_c_s = eval_normal-0.05;
 
-                    float selected_eval_s = 0;
+                    float selected_eval_s = first.get_eval(who);
                     float selected_visits = 0;
 
                     for (const auto& child : candidates) {
@@ -490,6 +490,7 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                                     if (selected_visits<=visit_s){
                                         selected_visits = visit_s;
                                         selected_move = move_n;
+                                        selected_eval_s = child_s.get_eval(who);
                                     }
                                 }
                             }
