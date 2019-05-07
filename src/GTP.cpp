@@ -490,13 +490,14 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                                     if (selected_visits<=visit_s){
                                         selected_visits = visit_s;
                                         selected_move = move_n;
-                                        selected_eval_s = child_s.get_eval(who);
+                                        selected_eval_s = eval_n;
                                     }
                                 }
                             }
 
                         }
                     }
+
 
                     std::string last_comments = search->get_last_comments(who);
                     std::string last_comments_s = search_s->get_last_comments(who);
