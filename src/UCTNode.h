@@ -70,8 +70,8 @@ public:
     bool has_children() const;
     bool expandable(const float min_psa_ratio = 0.0f) const;
 //    const float c_param = 0.8;
-//    const float c_param = 1.5;
-    const float c_param = 2.5;
+    const float c_param = 1.5;
+//    const float c_param = 2.5;
     float t_dif = 0.03*c_param;
     float t_max = 0.60;
     float t_min = 0.40;
