@@ -487,7 +487,7 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                             float move_sp_n = child.get_static_sp();
                             float eval_n = child.get_eval(who);
                             int visit_count_n = child.get_visits();
-                            if(eval_n>=eval_c_s && move_sp_n>=0.1 && visit_count_n>100){
+                            if(eval_n>=eval_c_s && visit_count_n > 100){
 
                                 for(const auto& child_s:candidates_s){
                                     int move_s = child_s.get_move();
