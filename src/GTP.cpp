@@ -469,47 +469,53 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                     selected_move = FastBoard::PASS;
                     game.play_move(who, selected_move,"");
                 }else{
+
                     UCTNodePointer& first = candidates.front();
                     selected_move = first.get_move();
-                    float eval_normal = first.get_eval(who);
-                    float eval_c_s = eval_normal-0.05;
 
-                    float selected_eval_s = first.get_eval(who);
-                    float selected_visits = 0;
+                    if(currentMoveNumber<3) {
+                        game.play_move(who, selected_move, "");
+                    } else{
+                        float eval_normal = first.get_eval(who);
+                        float eval_c_s = eval_normal-0.05;
 
-                    for (const auto& child : candidates) {
-                        int move_n = child.get_move();
-                        float move_sp_n = child.get_static_sp();
-                        float eval_n = child.get_eval(who);
-                        int visit_count_n = child.get_visits();
-                        if(eval_n>=eval_c_s && move_sp_n>=0.1 && visit_count_n>100){
+                        float selected_eval_s = first.get_eval(who);
+                        float selected_visits = 0;
 
-                            for(const auto& child_s:candidates_s){
-                                int move_s = child_s.get_move();
-                                int visit_s = child_s.get_visits();
-                                if(move_s == move_n){
-                                    if (selected_visits<=visit_s){
-                                        selected_visits = visit_s;
-                                        selected_move = move_n;
-                                        selected_eval_s = eval_n;
+                        for (const auto& child : candidates) {
+                            int move_n = child.get_move();
+                            float move_sp_n = child.get_static_sp();
+                            float eval_n = child.get_eval(who);
+                            int visit_count_n = child.get_visits();
+                            if(eval_n>=eval_c_s && move_sp_n>=0.1 && visit_count_n>100){
+
+                                for(const auto& child_s:candidates_s){
+                                    int move_s = child_s.get_move();
+                                    int visit_s = child_s.get_visits();
+                                    if(move_s == move_n){
+                                        if (selected_visits<=visit_s){
+                                            selected_visits = visit_s;
+                                            selected_move = move_n;
+                                            selected_eval_s = eval_n;
+                                        }
                                     }
                                 }
+
                             }
-
                         }
+
+                        std::string last_comments = search->get_last_comments(who);
+                        std::string last_comments_s = search_s->get_last_comments(who);
+
+                        mixed_info += last_comments_s+"\n"+last_comments+"\n";
+                        mixed_info+="]";
+
+                        if(selected_eval_s<0.10){
+                            selected_move = FastBoard::PASS;
+                        }
+
+                        game.play_move(who, selected_move,mixed_info);
                     }
-
-                    std::string last_comments = search->get_last_comments(who);
-                    std::string last_comments_s = search_s->get_last_comments(who);
-
-                    mixed_info += last_comments_s+"\n"+last_comments+"\n";
-                    mixed_info+="]";
-
-                    if(selected_eval_s<0.10){
-                        selected_move = FastBoard::PASS;
-                    }
-
-                    game.play_move(who, selected_move,mixed_info);
                 }
 
                 last_move = selected_move;
