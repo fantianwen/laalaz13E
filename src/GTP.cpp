@@ -511,7 +511,7 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                         mixed_info += last_comments_s+"\n"+last_comments+"\n";
                         mixed_info+="]";
 
-                        if(selected_eval_s<0.10){
+                        if(selected_eval_s<0.03){
                             selected_move = FastBoard::PASS;
                         }
 
