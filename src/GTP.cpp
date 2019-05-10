@@ -480,22 +480,21 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                         float eval_c_s = eval_normal-0.05;
 
                         float selected_eval_s = first.get_eval(who);
-                        float selected_s_sp = 0;
+                        float selected_visits = 0;
 
                         for (const auto& child : candidates) {
                             int move_n = child.get_move();
+                            float move_sp_n = child.get_static_sp();
                             float eval_n = child.get_eval(who);
                             int visit_count_n = child.get_visits();
                             if(eval_n>=eval_c_s && visit_count_n > 100){
 
                                 for(const auto& child_s:candidates_s){
                                     int move_s = child_s.get_move();
-//                                    int visit_s = child_s.get_visits();
-                                    float s_sp = child_s.get_static_sp();
-
+                                    int visit_s = child_s.get_visits();
                                     if(move_s == move_n){
-                                        if (selected_s_sp<=s_sp){
-                                            selected_s_sp = s_sp;
+                                        if (selected_visits<=visit_s){
+                                            selected_visits = visit_s;
                                             selected_move = move_n;
                                             selected_eval_s = eval_n;
                                         }
@@ -511,7 +510,7 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                         mixed_info += last_comments_s+"\n"+last_comments+"\n";
                         mixed_info+="]";
 
-                        if(selected_eval_s<0.03){
+                        if(selected_eval_s<0.05){
                             selected_move = FastBoard::PASS;
                         }
 
