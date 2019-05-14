@@ -539,16 +539,13 @@ void UCTNode::usingStrengthControl(int color,bool flag){
 
         printf("the first wr: %f, the second wr: %f", first, second);
 
-        if (accord_case_one(first, second)) {
-            // do nothing
-            printf("accord with case one \n");
-        } else if (accord_case_two(first)) {
+        if (accord_case_two(first)) {
             //do nothing
             printf("accord with case two \n");
         } else if (first >= t_min && first <= t_max) {
             // do nothing
 
-            accord_case_three(color, first - t_dif);
+//            accord_case_three(color, first - t_dif);
             printf("accord with case three \n");
             printf("case three move is %d \n", case_three_move);
 
@@ -587,88 +584,22 @@ bool UCTNode::accord_case_three(int color,float threshold){
     return false;
 }
 
-
 bool UCTNode::accord_case_three_one(int color){
-
-    float firstMoveRate;
-    float allowedProb1,allowedProb2,allowedProb3,allowedProb4;
-    float allowedPolicy1 = 0.05,allowedPolicy2=0.10,allowedPolicy3=0.20,allowedPolicy4=0.40;
-
-    int _move = 0;
-
-    firstMoveRate = get_first_child()->get_eval(color);
-
-    allowedProb1 = firstMoveRate-(float)0.03*c_param;
-    allowedProb2 = firstMoveRate-(float)0.04*c_param;
-    allowedProb3 = firstMoveRate-(float)0.06*c_param;
-    allowedProb4 = firstMoveRate-(float)0.08*c_param;
 
     case_three_move = get_first_child()->get_move();
     case_three_winrate = get_first_child()->get_eval(color);
 
     for (const auto& child : get_children()) {
-//        _visit = child->get_visits();
-        _move = child->get_move();
-        float policy = child.get_static_sp();
-
-        auto prob = child.get_eval(color);
-
-        if(prob>=allowedProb4 && prob<=allowedProb3 && policy>=allowedPolicy4){
-
-            printf("accord with case 3-4 \n");
-
-            printf("policy is: %f,allowedPolicy is:%f.",policy,allowedPolicy4);
-
+        float wr = child.get_eval(color);
+        if (wr<t_max){
+            case_three_move = child.get_move();
+            case_three_winrate = wr;
             case_three = true;
-            if(case_three_winrate>prob){
-                case_three_move =_move;
-                case_three_winrate = prob;
-            }
-        }
-
-        if(prob>=allowedProb3 && prob<=allowedProb2 && policy>=allowedPolicy3){
-
-            printf("accord with case 3-3 \n");
-
-            printf("policy is: %f,allowedPolicy is:%f.",policy,allowedPolicy3);
-
-            case_three = true;
-            if(case_three_winrate>prob){
-                case_three_move =_move;
-                case_three_winrate = prob;
-            }
-        }
-
-
-        if(prob>=allowedProb2 && prob<=allowedProb1 && policy>=allowedPolicy2){
-
-            printf("accord with case 3-2 \n");
-
-            printf("policy is: %f,allowedPolicy is:%f.",policy,allowedPolicy2);
-
-            case_three = true;
-            if(case_three_winrate>prob){
-                case_three_move =_move;
-                case_three_winrate = prob;
-            }
-        }
-
-        if(prob>=allowedProb1 && policy>allowedPolicy1){
-
-            printf("accord with case 3-1 \n");
-
-            printf("policy is: %f,allowedPolicy is:%f.",policy,allowedPolicy1);
-
-            case_three = true;
-
-            if(case_three_winrate>prob){
-                case_three_move =_move;
-                case_three_winrate = prob;
-            }
-
+            break;
         }
     }
     return false;
+
 }
 
 bool UCTNode::get_case_three_flag(){

@@ -434,6 +434,8 @@ int UCTSearch::get_best_move(passflag_t passflag) {
 
     // Make sure best is first
     m_root->sort_children(color);
+    m_root->usingStrengthControl(color,true);
+    m_root->print_candidates(color,selectedWinrate);
 
     auto movenum = int(m_rootstate.get_movenum());
     if (movenum < cfg_random_cnt) {
@@ -443,8 +445,18 @@ int UCTSearch::get_best_move(passflag_t passflag) {
     auto first_child = m_root->get_first_child();
     assert(first_child != nullptr);
 
-    int bestmove=first_child->get_move();
-    float besteval = first_child->first_visit() ? 0.5f : first_child->get_raw_eval(color);
+    int bestmove;
+    float besteval;
+
+    if(m_root->get_case_three_flag()){
+        bestmove = m_root->get_case_three_move();
+        besteval = m_root->get_case_three_winrate();
+        selectedWinrate = m_root->get_case_three_winrate();
+    }else{
+        bestmove= first_child->get_move();
+        besteval= first_child->first_visit() ? 0.5f : first_child->get_raw_eval(color);
+        selectedWinrate = besteval;
+    }
 
     selectedWinrate = besteval;
 

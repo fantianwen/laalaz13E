@@ -442,10 +442,7 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                 // Outputs winrate and pvs for lz-genmove_analyze
                 int move = search->think(who);
 
-//                std::string last_comments = search->get_last_comments(who);
-
                 game.play_move(who,move);
-//                game.set_last_move_canidates(candidates);
 
                 std::string vertex = game.move_to_text(move);
                 if (!analysis_output) {
