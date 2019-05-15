@@ -568,16 +568,14 @@ void GTP::execute(GameState & game, const std::string& xinput) {
 
                     printf("the mixed eval is :%f",mixed_eval);
 
-                    if(mixed_eval<0.03){
+                    if(mixed_eval<0.01){
                         selected_move = FastBoard::PASS;
                     }
 
-                    if (currentMoveNumber<5){
+                    if (currentMoveNumber<=2){
                         selected_move = candidates.front().get_move();
-                    }else if(currentMoveNumber<15){
-                        selected_move = candidates_s.front().get_move();
                     }else {
-                        selected_move = candidates.front().get_move();
+                        selected_move = candidates_s.front().get_move();
                     }
 
                     std::string last_comments = search->get_last_comments(who);
