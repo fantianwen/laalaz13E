@@ -484,87 +484,87 @@ void GTP::execute(GameState & game, const std::string& xinput) {
                     selected_move = FastBoard::PASS;
                     game.play_move(who, selected_move,"");
                 }else{
-                    for (const auto& child_s : candidates_s) {
+//                    for (const auto& child_s : candidates_s) {
+//
+//                        float temp_mix_eval;
+//                        int temp_move;
+//
+//                        float eval_s = (float)child_s.get_visits()/total_count_candidates_s;
+//                        int move_s = child_s.get_move();
+//
+//                        printf("the eval is %f",eval_s);
+//
+//                        for (const auto& child : candidates){
+//
+//                            float eval = (float)child.get_visits()/total_count_candidates;
+//                            int move = child.get_move();
+//
+//                            if(move == move_s){
+//                                temp_mix_eval = eval_s*alpha+eval*(1-alpha);
+//                                break;
+//                            }else{
+//                                temp_mix_eval = eval_s*alpha;
+//                            }
+//                        }
+//
+//                        temp_move = move_s;
+//
+//                        if(temp_mix_eval>0){
+//                            std::string movestr = Utils::convertVertex(temp_move);
+//                            std::string::size_type idx;
+//                            idx = mixed_info.find(movestr);
+//                            if(idx==std::string::npos){
+//                                mixed_info+=Utils::convertVertex(temp_move)+"\t"+std::to_string(temp_mix_eval)+"\n";
+//                            }
+//                        }
+//
+//                        if(temp_mix_eval>mixed_eval){
+//                            mixed_eval = temp_mix_eval;
+//                            selected_move = temp_move;
+//                        }
+//
+//                    }
 
-                        float temp_mix_eval;
-                        int temp_move;
-
-                        float eval_s = (float)child_s.get_visits()/total_count_candidates_s;
-                        int move_s = child_s.get_move();
-
-                        printf("the eval is %f",eval_s);
-
-                        for (const auto& child : candidates){
-
-                            float eval = (float)child.get_visits()/total_count_candidates;
-                            int move = child.get_move();
-
-                            if(move == move_s){
-                                temp_mix_eval = eval_s*alpha+eval*(1-alpha);
-                                break;
-                            }else{
-                                temp_mix_eval = eval_s*alpha;
-                            }
-                        }
-
-                        temp_move = move_s;
-
-                        if(temp_mix_eval>0){
-                            std::string movestr = Utils::convertVertex(temp_move);
-                            std::string::size_type idx;
-                            idx = mixed_info.find(movestr);
-                            if(idx==std::string::npos){
-                                mixed_info+=Utils::convertVertex(temp_move)+"\t"+std::to_string(temp_mix_eval)+"\n";
-                            }
-                        }
-
-                        if(temp_mix_eval>mixed_eval){
-                            mixed_eval = temp_mix_eval;
-                            selected_move = temp_move;
-                        }
-
-                    }
-
-                    for (const auto& child : candidates) {
-
-                        float temp_mix_eval ;
-                        int temp_move;
-
-                        float eval = (float)child.get_visits()/total_count_candidates;
-
-                        int move = child.get_move();
-
-                        for (const auto& child_s : candidates_s){
-
-                            float eval_s = (float)child_s.get_visits()/total_count_candidates_s;
-                            int move_s = child_s.get_move();
-
-                            if(move == move_s){
-                                temp_mix_eval = eval_s*alpha+eval*(1-alpha);
-                                break;
-                            }else{
-                                temp_mix_eval = eval*(1-alpha);
-                            }
-                        }
-
-                        temp_move = move;
-
-                        if(temp_mix_eval>0){
-                            std::string movestr = Utils::convertVertex(temp_move);
-                            std::string::size_type idx;
-                            idx = mixed_info.find(movestr);
-                            if(idx==std::string::npos){
-                                mixed_info+=Utils::convertVertex(temp_move)+"\t"+std::to_string(temp_mix_eval)+"\n";
-                            }
-                        }
-
-
-                        if(temp_mix_eval>mixed_eval){
-                            mixed_eval = temp_mix_eval;
-                            selected_move = temp_move;
-                        }
-
-                    }
+//                    for (const auto& child : candidates) {
+//
+//                        float temp_mix_eval ;
+//                        int temp_move;
+//
+//                        float eval = (float)child.get_visits()/total_count_candidates;
+//
+//                        int move = child.get_move();
+//
+//                        for (const auto& child_s : candidates_s){
+//
+//                            float eval_s = (float)child_s.get_visits()/total_count_candidates_s;
+//                            int move_s = child_s.get_move();
+//
+//                            if(move == move_s){
+//                                temp_mix_eval = eval_s*alpha+eval*(1-alpha);
+//                                break;
+//                            }else{
+//                                temp_mix_eval = eval*(1-alpha);
+//                            }
+//                        }
+//
+//                        temp_move = move;
+//
+//                        if(temp_mix_eval>0){
+//                            std::string movestr = Utils::convertVertex(temp_move);
+//                            std::string::size_type idx;
+//                            idx = mixed_info.find(movestr);
+//                            if(idx==std::string::npos){
+//                                mixed_info+=Utils::convertVertex(temp_move)+"\t"+std::to_string(temp_mix_eval)+"\n";
+//                            }
+//                        }
+//
+//
+//                        if(temp_mix_eval>mixed_eval){
+//                            mixed_eval = temp_mix_eval;
+//                            selected_move = temp_move;
+//                        }
+//
+//                    }
 
                     printf("the mixed eval is :%f",mixed_eval);
 
