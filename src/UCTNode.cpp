@@ -511,47 +511,25 @@ void UCTNode::usingStrengthControl(int color,bool flag){
 
     if(flag) {
 
-        printf("using strength control \n");
+        printf("using simple strength control \n");
 
-        int index = 0;
+        case_three_winrate = 0;
 
-        float first = 0, second = 0;
+        double wr_temp = 1;
 
         for (const auto &child : get_children()) {
 
-            if (index == 0) {
-                first = child.get_eval(color);
+            double wr = std::abs(child.get_eval(color)-0.5);
+            int visi = child.get_visits();
+            if (wr_temp >= wr && visi>10){
+                wr_temp = wr;
+                case_three_winrate =  child.get_eval(color);
+                case_three_move = child.get_move();
             }
-
-            if (index == 1) {
-                second = child.get_eval(color);
-            }
-
-            index++;
-
-            for (const auto &initial_node: this->initial_node_list) {
-                if (initial_node.second == child.get_move()) {
-                    child->m_static_sp = initial_node.first;
-                }
-            }
-
         }
 
-        printf("the first wr: %f, the second wr: %f", first, second);
+        case_three = true;
 
-        if (accord_case_two(first)) {
-            //do nothing
-            printf("accord with case two \n");
-        } else if (first >= t_min && first <= t_max) {
-            // do nothing
-
-//            accord_case_three(color, first - t_dif);
-            printf("accord with case three \n");
-            printf("case three move is %d \n", case_three_move);
-
-        } else {
-            accord_case_three_one(color);
-        }
     }
 
 }
