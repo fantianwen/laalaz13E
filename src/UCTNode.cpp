@@ -529,7 +529,6 @@ void UCTNode::usingStrengthControl(int color,bool flag){
         }
 
         case_three = true;
-
     }
 
 }
@@ -540,6 +539,7 @@ bool UCTNode::accord_case_one(float first,float second){
 
 bool UCTNode::accord_case_two(float first){
     return first<=t_min;
+
 }
 
 bool UCTNode::accord_case_three(int color,float threshold){
