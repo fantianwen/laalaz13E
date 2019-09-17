@@ -125,7 +125,7 @@ private:
 
     // Move
     std::int16_t m_move;
-    std::float_t m_static_sp{0.0f};
+    float m_static_sp;
     // UCT
     std::atomic<std::int16_t> m_virtual_loss{0};
     std::atomic<int> m_visits{0};
