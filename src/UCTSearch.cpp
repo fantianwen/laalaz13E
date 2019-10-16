@@ -386,8 +386,9 @@ bool UCTSearch::should_resign(passflag_t passflag, float besteval) {
     const auto color = m_rootstate.board.get_to_move();
 
     const auto is_default_cfg_resign = cfg_resignpct < 0;
-    const auto resign_threshold =
-        0.01f * (is_default_cfg_resign ? 10 : cfg_resignpct);
+//    const auto resign_threshold =
+//        0.01f * (is_default_cfg_resign ? 10 : cfg_resignpct);
+    const auto resign_threshold = 0.01f;
     if (besteval > resign_threshold) {
         // eval > cfg_resign
         return false;
@@ -417,6 +418,14 @@ int UCTSearch::get_last_move(){
     return m_rootstate.get_last_move();
 }
 
+float UCTSearch::get_last_visitrate(){
+    return selectedVisitrate;
+}
+
+float UCTSearch::get_last_winrate(){
+    return selectedWinrate;
+}
+
 std::string UCTSearch::get_last_comments(int color) {
 
     std::ostringstream comments;
@@ -434,8 +443,8 @@ int UCTSearch::get_best_move(passflag_t passflag) {
 
     // Make sure best is first
     m_root->sort_children(color);
-    m_root->usingStrengthControl(color,get_last_move());
-    m_root->print_candidates(color,selectedWinrate);
+//    m_root->usingStrengthControl(color,get_last_move());
+//    m_root->print_candidates(color,selectedWinrate);
 
     // Check whether to randomize the best move proportional
     // to the playout counts, early game only.
@@ -449,16 +458,17 @@ int UCTSearch::get_best_move(passflag_t passflag) {
 
     int bestmove;
     float besteval;
-
-    if(m_root->get_case_three_flag()){
-        bestmove = m_root->get_case_three_move();
-        besteval = m_root->get_case_three_winrate();
-        selectedWinrate = m_root->get_case_three_winrate();
-    }else{
-        bestmove= first_child->get_move();
-        besteval= first_child->first_visit() ? 0.5f : first_child->get_raw_eval(color);
-        selectedWinrate = besteval;
-    }
+//
+//    if(m_root->get_case_three_flag()){
+//        bestmove = m_root->get_case_three_move();
+//        besteval = m_root->get_case_three_winrate();
+//        selectedWinrate = m_root->get_case_three_winrate();
+//    }else{
+    bestmove= first_child->get_move();
+    besteval= first_child->first_visit() ? 0.5f : first_child->get_raw_eval(color);
+    selectedWinrate = besteval;
+    selectedVisitrate = (float)first_child->get_visits()/(float)m_root->get_visits();
+//    }
 
     // do we want to fiddle with the best move because of the rule set?
     if (passflag & UCTSearch::NOPASS) {
@@ -739,7 +749,6 @@ int UCTSearch::think(int color, passflag_t passflag) {
     // create a sorted list of legal moves (make sure we
     // play something legal and decent even in time trouble)
     m_root->prepare_root_node(m_network, color, m_nodes, m_rootstate);
-
 
     m_run = true;
     int cpus = cfg_num_threads;

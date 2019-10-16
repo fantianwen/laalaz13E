@@ -201,7 +201,9 @@ const std::string GTP::s_commands[] = {
         "lz-setoption",
         "autotrain",
         "check_running",
-        "lastMove"
+        "lastMove",
+        "lastVisitrate",
+        "lastWinrate",
         ""
 };
 
@@ -638,7 +640,23 @@ void GTP::execute(GameState & game, const std::string& xinput) {
     }else if(command.find("check_running") == 0){
         gtp_printf_raw("%s\n", search->is_running()?"True":"False");
         return;
-    } else if(command.find("lastmove") == 0){
+    }else if(command.find("lastwinrate") == 0){
+        std::ostringstream result;
+
+        result<<search->get_last_winrate();
+
+        gtp_printf_raw("%s\n", result.str().c_str());
+        return;
+
+    }else if(command.find("lastvisitrate") == 0){
+        std::ostringstream result;
+
+        result<<search->get_last_visitrate();
+
+        gtp_printf_raw("%s\n", result.str().c_str());
+        return;
+
+    }else if(command.find("lastmove") == 0){
 
         int move = search->get_last_move();
 
@@ -972,9 +990,6 @@ void GTP::execute(GameState & game, const std::string& xinput) {
             out.close();
             gtp_printf(id, "");
         }
-
-
-
 
         return;
     } else if (command.find("load_training") == 0) {

@@ -310,6 +310,7 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root) {
     auto best_value = std::numeric_limits<double>::lowest();
 
     for (auto& child : m_children) {
+
         if (!child.active()) {
             continue;
         }
@@ -325,6 +326,7 @@ UCTNode* UCTNode::uct_select_child(int color, bool is_root) {
         const auto psa = child.get_policy();
         const auto denom = 1.0 + child.get_visits();
         const auto puct = cfg_puct * psa * (numerator / denom);
+        // fan, this is the selection function
         const auto value = winrate + puct;
         assert(value > std::numeric_limits<double>::lowest());
 
@@ -345,24 +347,24 @@ public:
     NodeComp(int color) : m_color(color) {};
     bool operator()(const UCTNodePointer& a,
                     const UCTNodePointer& b) {
-        // if visits are not same, sort on visits
-//        if (a.get_visits() != b.get_visits()) {
-//            return a.get_visits() < b.get_visits();
-//        }
-//
-//        // neither has visits, sort on policy prior
-//        if (a.get_visits() == 0) {
-//
-//        }
-
-        // both have same non-zero number of visits
-//        return a.get_eval(m_color) < b.get_eval(m_color);
-
-        if(a.get_visits()>0 && b.get_visits()>0){
-            return a.get_eval(m_color)<b.get_eval(m_color);
+//         if visits are not same, sort on visits
+        if (a.get_visits() != b.get_visits()) {
+            return a.get_visits() < b.get_visits();
         }
 
-        return a.get_policy() < b.get_policy();
+        // neither has visits, sort on policy prior
+        if (a.get_visits() == 0) {
+           return a.get_policy() < b.get_policy();
+        }
+
+//         both have same non-zero number of visits
+        return a.get_eval(m_color) < b.get_eval(m_color);
+//
+//        if(a.get_visits()>0 && b.get_visits()>0){
+//            return a.get_eval(m_color)<b.get_eval(m_color);
+//        }
+//
+//        return a.get_policy() < b.get_policy();
 
     }
 private:

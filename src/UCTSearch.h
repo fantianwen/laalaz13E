@@ -102,6 +102,8 @@ public:
     void set_visit_limit(int visits);
     void ponder();
     int get_last_move();
+    float get_last_visitrate();
+    float get_last_winrate();
     std::string get_last_comments(int color);
     bool is_running() const;
     void increment_playouts();
@@ -136,6 +138,7 @@ private:
     int m_maxplayouts;
     int m_maxvisits;
     float selectedWinrate;
+    float selectedVisitrate;
 
     std::string m_candidates;
 
