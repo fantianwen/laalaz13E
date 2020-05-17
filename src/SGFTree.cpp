@@ -45,7 +45,7 @@ void SGFTree::init_state() {
     // Initialize with defaults.
     // The SGF might be missing boardsize or komi
     // which means we'll never initialize properly.
-    m_state.init_game(19, 7.5f);
+    m_state.init_game(BOARD_SIZE, 7.5f);
 }
 
 KoState * SGFTree::get_state() {
@@ -128,7 +128,7 @@ void SGFTree::populate_states() {
         } else {
             if (!m_properties.count("SZ")) {
                 // No size, but SGF spec defines default size for Go
-                m_properties.insert(std::make_pair("SZ", "19"));
+                m_properties.insert(std::make_pair("SZ", "13"));
                 valid_size = true;
             }
         }
