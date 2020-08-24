@@ -53,7 +53,7 @@ bool UCTNode::first_visit() const {
 void UCTNode::get_static_policy(Network & network,
                                 GameState& state){
 
-    const auto raw_netlist = network.get_output(
+    const auto raw_netlist = network.geutput(
             &state, Network::Ensemble::RANDOM_SYMMETRY);
 
     const auto to_move = state.board.get_to_move();

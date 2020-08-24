@@ -248,7 +248,7 @@ std::string GTP::get_life_list(const GameState & game, bool live) {
     return result;
 }
 
-void GTP::execute(GameState & game, const std::string& xinput) {
+void GTP::execute(GameState & game, const std::string& input) {
     std::string input;
     static auto search = std::make_unique<UCTSearch>(game, *s_network);
 
