@@ -83,7 +83,7 @@ We have written auto fight scripts in Python, we will introduce you how the C/S 
 
 A simple script if auto-fight is here "https://github.com/fantianwen/ExTools/blob/master/autoFight.py" for referring.
 
-I will explain here in detail. Please read it.
+I will not explain here in detail. It is easy to understand, please read the script and you will know how it works fast.
 
 Ok, now you have know how this script is working. 
 
