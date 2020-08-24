@@ -17,7 +17,7 @@ As you can see, there are many branches in the projects.
 
 - master: the branch which is in track with the original project (https://github.com/leela-zero/leela-zero), 19x19 board-size version
 - ter_and_inf: the branch which works for "Various Strategies Production";
-- normal: normal 13x13 boar-size Leela Zero version;
+- normal: normal 13x13 board-size Leela Zero version;
 - develop: position control development (the branch name is not good, sorry);
 - simple_strength_control: using simple position control method;
 - mix_C: various strategy production by using mixed method.(C means center)
